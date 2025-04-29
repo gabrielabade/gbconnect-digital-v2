@@ -1,3 +1,56 @@
+// Adicione esta configuração no início do arquivo, logo após as outras declarações de variáveis
+
+// Configurações de logo
+const CONFIG = {
+  // Caminhos das imagens do logo
+  logoPath: {
+    // Tema escuro
+    darkSticky: './images/logo-yellow-pink.webp',   // Header normal tema escuro (amarelo)
+    darkNormal: './images/logo-blue-pink.webp',     // Header sticky tema escuro (fica azul)
+    darkFooter: './images/logo-yellow-pink.webp',   // Footer tema escuro
+
+    // Tema claro
+    lightNormal: './images/logo-blue-pink.webp',    // Header normal tema claro (branco)
+    lightSticky: './images/logo-white-pink.webp',   // Header sticky tema claro (fica azul)
+    lightFooter: './images/logo-blue-pink.webp'     // Footer tema claro
+  }
+};
+
+// Função para atualizar o logo do header
+function updateLogo() {
+  const logo = document.getElementById('header-logo');
+  if (!logo) return; // Evita erro se não encontrar a logo
+
+  const currentTheme = document.body.getAttribute('data-theme');
+  const isScrolled = document.querySelector('.header')?.classList.contains('scrolled');
+
+  // Define qual imagem usar em cada cenário
+  let newSrc;
+
+  if (currentTheme === 'light') {
+    // No tema claro
+    newSrc = isScrolled ? CONFIG.logoPath.lightSticky : CONFIG.logoPath.lightNormal;
+  } else {
+    // No tema escuro
+    newSrc = isScrolled ? CONFIG.logoPath.darkSticky : CONFIG.logoPath.darkNormal;
+  }
+
+  // Atualiza só se necessário
+  if (logo.src.split('/').pop() !== newSrc.split('/').pop()) {
+    logo.src = newSrc;
+  }
+}
+
+// Função para atualizar o logo do footer
+function updateFooterLogo() {
+  const footerLogo = document.querySelector('.footer-logo img');
+  if (!footerLogo) return;
+
+  const isDarkTheme = document.body.getAttribute('data-theme') === 'dark';
+  footerLogo.src = isDarkTheme ? CONFIG.logoPath.darkFooter : CONFIG.logoPath.lightFooter;
+}
+
+
 // Preloader
 window.addEventListener('load', function () {
   const preloader = document.getElementById('preloader');
@@ -53,11 +106,17 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 window.addEventListener('scroll', function () {
   const header = document.querySelector('.header');
   const scrollPosition = window.scrollY;
+  const wasScrolled = header.classList.contains('scrolled');
 
   if (scrollPosition > 100) {
     header.classList.add('scrolled');
   } else {
     header.classList.remove('scrolled');
+  }
+
+  // Se o estado "scrolled" mudou, atualiza a logo
+  if (wasScrolled !== (scrollPosition > 100)) {
+    updateLogo();
   }
 });
 
@@ -101,6 +160,10 @@ function initThemeToggle() {
   // Update theme toggle icons
   updateThemeIcons(currentTheme);
 
+  // Ensure logos are updated on page load
+  updateLogo();
+  updateFooterLogo();
+
   // Add event listeners to theme toggles
   themeToggles.forEach(toggle => {
     toggle.addEventListener('click', () => {
@@ -126,6 +189,10 @@ function updateThemeIcons(theme) {
       icon.classList.add('bx-moon');
     }
   });
+
+  // Atualiza os logos quando o tema muda
+  updateLogo();
+  updateFooterLogo();
 }
 
 initThemeToggle();
@@ -533,3 +600,9 @@ function initParticles() {
 
 // Initialize particles after the page is loaded
 window.addEventListener('load', initParticles);
+
+// Garantir que os logos estejam corretos após o carregamento completo
+window.addEventListener('load', function () {
+  updateLogo();
+  updateFooterLogo();
+});

@@ -2726,3 +2726,45 @@ body[data-theme="light"] .service-option span::before {
 .logo:hover img {
   filter: drop-shadow(0 0 8px rgba(242, 48, 120, 0.6));
 }
+
+/* Tema escuro (padrão) */
+body[data-theme="dark"] .header {
+  background: #CFF305;
+  /* Fundo amarelo para header no tema escuro */
+  transition: background-color 0.3s ease;
+}
+
+body[data-theme="dark"] .header.scrolled {
+  background: rgba(5, 18, 89, 0.95);
+  /* Fundo azul escuro para header rolado no tema escuro */
+}
+
+/* Tema claro */
+body[data-theme="light"] .header {
+  background: #FFFFFF;
+  /* Fundo branco para header no tema claro */
+  border-bottom: 1px solid rgba(5, 18, 89, 0.1);
+}
+
+body[data-theme="light"] .header.scrolled {
+  background: rgba(5, 18, 89, 0.95);
+  /* Fundo azul escuro para header rolado no tema claro */
+  border-bottom: none;
+}
+
+/* Cores dos textos do nav */
+body[data-theme="dark"] .header .nav-link {
+  color: var(--primary-color);
+  /* Cor de texto azul escuro no tema escuro */
+}
+
+body[data-theme="light"] .header .nav-link {
+  color: var(--primary-color);
+  /* Cor de texto azul escuro no tema claro */
+}
+
+body[data-theme="dark"] .header.scrolled .nav-link,
+body[data-theme="light"] .header.scrolled .nav-link {
+  color: var(--text-light);
+  /* Cor de texto branco quando o header está rolado */
+}

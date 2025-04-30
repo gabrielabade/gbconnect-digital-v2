@@ -124,10 +124,10 @@ body {
 }
 
 .container {
-  max-width: 1200px;
-  width: 100%;
+  max-width: 1400px;
+  width: 92%;
   margin: 0 auto;
-  padding: 0 var(--container-padding);
+  padding: 0;
   position: relative;
 }
 
@@ -2868,6 +2868,10 @@ body[data-theme="light"] .whatsapp-float {
     height: 60px;
   }
 
+  .container {
+    width: 94%;
+  }
+
   .hero-title {
     font-size: 3.6rem;
   }
@@ -2912,6 +2916,7 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .nav-link {
+    position: relative;
     display: block;
     padding: 1rem 0;
     width: 100%;

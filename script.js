@@ -1,5 +1,3 @@
-// Adicione esta configuração no início do arquivo, logo após as outras declarações de variáveis
-
 // Configurações de logo
 const CONFIG = {
   // Caminhos das imagens do logo
@@ -50,7 +48,6 @@ function updateFooterLogo() {
   footerLogo.src = isDarkTheme ? CONFIG.logoPath.darkFooter : CONFIG.logoPath.lightFooter;
 }
 
-
 // Preloader
 window.addEventListener('load', function () {
   const preloader = document.getElementById('preloader');
@@ -60,93 +57,163 @@ window.addEventListener('load', function () {
   }, 500);
 });
 
-// Mobile Menu Toggle
-const menuToggle = document.querySelector('.menu-toggle');
-const navbar = document.querySelector('.navbar');
-
-if (menuToggle) {
-  menuToggle.addEventListener('click', function () {
-    this.classList.toggle('active');
-    navbar.classList.toggle('active');
-  });
-}
-
-// Close menu when link is clicked
-document.querySelectorAll('.nav-link').forEach(link => {
-  link.addEventListener('click', () => {
-    menuToggle.classList.remove('active');
-    navbar.classList.remove('active');
-  });
-});
-
-// Smooth scrolling for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const targetId = this.getAttribute('href');
-    const targetElement = document.querySelector(targetId);
-
-    if (targetElement) {
-      const headerHeight = document.querySelector('.header').offsetHeight;
-      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-
-      window.scrollTo({
-        top: targetPosition,
-        behavior: 'smooth'
-      });
-
-      // Update URL without reload
-      history.pushState(null, null, targetId);
-    }
-  });
-});
-
-// Header scroll effect
-window.addEventListener('scroll', function () {
+// Navigation.js - Solução completa para o header e navegação
+document.addEventListener('DOMContentLoaded', function () {
+  // Elementos principais
   const header = document.querySelector('.header');
-  const scrollPosition = window.scrollY;
-  const wasScrolled = header.classList.contains('scrolled');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const menuToggle = document.querySelector('.menu-toggle');
+  const navbar = document.querySelector('.navbar');
+  const sections = document.querySelectorAll('section[id]');
 
-  if (scrollPosition > 100) {
-    header.classList.add('scrolled');
-  } else {
-    header.classList.remove('scrolled');
+  // Mobile Menu Toggle
+  if (menuToggle) {
+    menuToggle.addEventListener('click', function () {
+      this.classList.toggle('active');
+      navbar.classList.toggle('active');
+    });
   }
 
-  // Se o estado "scrolled" mudou, atualiza a logo
-  if (wasScrolled !== (scrollPosition > 100)) {
+  // 1. Função para atualizar a aparência do header no scroll
+  function updateHeaderOnScroll() {
+    if (window.scrollY > 50) {
+      header.classList.add('scrolled');
+    } else {
+      header.classList.remove('scrolled');
+    }
+
+    // Atualizar logo quando necessário
     updateLogo();
   }
+
+  // 2. Função para destacar o link de navegação ativo
+  function highlightActiveLink() {
+    let currentSection = '';
+    const scrollPosition = window.scrollY + 200;
+
+    // Encontrar a seção atual
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+      const sectionId = section.getAttribute('id');
+
+      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+        currentSection = sectionId;
+      }
+    });
+
+    // Atualizar classes ativas
+    navLinks.forEach(link => {
+      // Remover todas as classes ativas primeiro
+      link.classList.remove('active');
+
+      // Adicionar classe ativa ao link correspondente
+      const linkHref = link.getAttribute('href').substring(1); // Remove o #
+      if (linkHref === currentSection) {
+        link.classList.add('active');
+      }
+    });
+  }
+
+  // 3. Função para rolagem suave e controle de cliques
+  function setupSmoothScrolling() {
+    // Para links de navegação
+    navLinks.forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        // Fechar menu móvel
+        if (menuToggle && navbar) {
+          menuToggle.classList.remove('active');
+          navbar.classList.remove('active');
+        }
+
+        // Remover todas as classes ativas primeiro
+        navLinks.forEach(navLink => {
+          navLink.classList.remove('active');
+        });
+
+        // Adicionar classe ativa apenas ao link clicado
+        this.classList.add('active');
+
+        // Obter o alvo de destino
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          // Cálculo preciso da posição
+          const headerHeight = header.offsetHeight;
+          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+          // Realizar rolagem suave
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+
+          // Atualizar URL
+          history.pushState(null, null, targetId);
+        }
+      });
+    });
+
+    // Para outros links de âncora
+    document.querySelectorAll('a[href^="#"]:not(.nav-link)').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+          const headerHeight = header.offsetHeight;
+          const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+
+          // Atualizar URL
+          history.pushState(null, null, targetId);
+
+          // Atualizar navegação
+          const navLink = document.querySelector(`.nav-link[href="${targetId}"]`);
+          if (navLink) {
+            navLinks.forEach(link => {
+              link.classList.remove('active');
+            });
+            navLink.classList.add('active');
+          }
+        }
+      });
+    });
+  }
+
+  // 4. Inicializar todas as funções
+  function initNavigation() {
+    // Aplicar tratamento de scroll
+    window.addEventListener('scroll', function () {
+      updateHeaderOnScroll();
+      highlightActiveLink();
+    });
+
+    // Preparar rolagem suave
+    setupSmoothScrolling();
+
+    // Executar uma vez na inicialização
+    updateHeaderOnScroll();
+    highlightActiveLink();
+
+    // Tratar redimensionamento da janela
+    window.addEventListener('resize', function () {
+      highlightActiveLink();
+    });
+  }
+
+  // Iniciar toda a navegação
+  initNavigation();
 });
-
-// Active menu item on scroll
-function setActiveNavLink() {
-  const sections = document.querySelectorAll('section');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  let currentSection = '';
-  const scrollPosition = window.scrollY;
-  const headerHeight = document.querySelector('.header').offsetHeight;
-
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop - headerHeight - 100;
-    const sectionHeight = section.offsetHeight;
-
-    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-      currentSection = section.getAttribute('id');
-    }
-  });
-
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('href') === `#${currentSection}`) {
-      link.classList.add('active');
-    }
-  });
-}
-
-window.addEventListener('scroll', setActiveNavLink);
 
 // Theme Toggle
 function initThemeToggle() {

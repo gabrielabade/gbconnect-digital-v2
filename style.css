@@ -291,31 +291,30 @@ body[data-theme="light"] .highlight::after {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 1.5rem 0;
+  height: 80px;
   z-index: 100;
-  background: rgba(5, 18, 89, 0.9);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: all var(--transition-medium);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+/* Transição mais suave para o header */
+.header * {
+  transition: all 0.3s ease;
 }
 
 .header .container {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }
 
 .header.scrolled {
   padding: 1rem 0;
-  background: rgba(5, 18, 89, 0.95);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-body[data-theme="light"] .header {
-  background: rgba(5, 18, 89, 0.9);
-}
-
-body[data-theme="light"] .header.scrolled {
-  background: rgba(5, 18, 89, 0.95);
+  height: 70px;
+  background-color: var(--primary-color) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
 }
 
 .logo {
@@ -325,41 +324,49 @@ body[data-theme="light"] .header.scrolled {
 }
 
 .logo img {
-  height: 50px;
+  height: 40px;
   width: auto;
   transition: height var(--transition-fast);
 }
 
 .header.scrolled .logo img {
-  height: 40px;
+  height: 35px;
 }
 
 .navbar {
   display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .nav-list {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .nav-item {
+  height: 100%;
   margin: 0 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .nav-link {
-  color: var(--text-light);
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
   font-size: 1.4rem;
   font-family: var(--font-primary);
   font-weight: 600;
-  padding: 0.8rem 1.2rem;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  position: relative;
+  padding: 0 1.2rem;
   text-transform: uppercase;
   letter-spacing: 0.03em;
+  transition: all 0.3s ease;
 }
 
 .nav-link:hover {
@@ -369,17 +376,19 @@ body[data-theme="light"] .header.scrolled {
 .nav-link::after {
   content: '';
   position: absolute;
-  left: 0;
+  left: 50%;
   bottom: 0;
   width: 0;
   height: 2px;
   background-color: var(--accent-color);
-  transition: width var(--transition-fast);
+  transition: width 0.3s ease;
+  transform: translateX(-50%);
 }
 
 .nav-link:hover::after,
 .nav-link.active::after {
-  width: 100%;
+  width: 70%;
+  max-width: 100%;
 }
 
 .nav-contact-btn {
@@ -388,12 +397,15 @@ body[data-theme="light"] .header.scrolled {
   letter-spacing: 0.05em;
   background-color: var(--secondary-color);
   color: var(--text-light);
-  padding: 0.6rem 1.5rem;
+  padding: 0.8rem 1.5rem;
   border-radius: var(--border-radius-md);
   font-weight: 600;
-  margin-left: 1rem;
+  margin-left: 1.5rem;
   box-shadow: 0 4px 10px rgba(242, 48, 120, 0.3);
-  transition: all var(--transition-fast);
+  transition: all 0.3s ease;
+  height: auto;
+  display: flex;
+  align-items: center;
 }
 
 .nav-contact-btn:hover {
@@ -404,15 +416,13 @@ body[data-theme="light"] .header.scrolled {
 .theme-toggle {
   width: 4rem;
   height: 4rem;
-  border-radius: var(--border-radius-round);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 2rem;
-  color: var(--text-light);
-  background-color: transparent;
+  margin-left: 1.5rem;
   font-size: 2rem;
-  transition: all var(--transition-fast);
+  transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
@@ -2729,33 +2739,50 @@ body[data-theme="light"] .service-option span::before {
 
 /* Tema escuro (padrão) */
 body[data-theme="dark"] .header {
-  background: #CFF305;
-  /* Fundo amarelo para header no tema escuro */
-  transition: background-color 0.3s ease;
+  background-color: var(--accent-color);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 body[data-theme="dark"] .header.scrolled {
   background: rgba(5, 18, 89, 0.95);
-  /* Fundo azul escuro para header rolado no tema escuro */
+}
+
+/* Botão de alternância de tema - escuro */
+body[data-theme="dark"] .theme-toggle {
+  color: var(--bg-dark);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Botão de alternância de tema - claro */
+body[data-theme="light"] .theme-toggle {
+  color: var(--primary-color);
+  background-color: rgba(5, 18, 89, 0.1);
 }
 
 /* Tema claro */
+
 body[data-theme="light"] .header {
-  background: #FFFFFF;
-  /* Fundo branco para header no tema claro */
-  border-bottom: 1px solid rgba(5, 18, 89, 0.1);
+  background-color: var(--bg-light);
+  box-shadow: 0 4px 15px rgba(5, 18, 89, 0.08);
 }
 
 body[data-theme="light"] .header.scrolled {
   background: rgba(5, 18, 89, 0.95);
-  /* Fundo azul escuro para header rolado no tema claro */
-  border-bottom: none;
 }
 
 /* Cores dos textos do nav */
 body[data-theme="dark"] .header .nav-link {
   color: var(--primary-color);
   /* Cor de texto azul escuro no tema escuro */
+}
+
+/* Cor dos links no tema claro */
+body[data-theme="light"] .header:not(.scrolled) .nav-link {
+  color: var(--primary-color);
+}
+
+body[data-theme="light"] .header:not(.scrolled) .nav-link::after {
+  background-color: var(--secondary-color);
 }
 
 body[data-theme="light"] .header .nav-link {
@@ -2766,5 +2793,21 @@ body[data-theme="light"] .header .nav-link {
 body[data-theme="dark"] .header.scrolled .nav-link,
 body[data-theme="light"] .header.scrolled .nav-link {
   color: var(--text-light);
-  /* Cor de texto branco quando o header está rolado */
+}
+
+/* Estados de cor dos links */
+body[data-theme="dark"] .nav-link {
+  color: var(--text-light);
+}
+
+/* Links após rolagem em ambos os temas */
+.header.scrolled .nav-link {
+  color: var(--text-light);
+  /* Branco para ambos os temas após rolagem */
+}
+
+/* Botão de alternância após rolagem */
+.header.scrolled .theme-toggle {
+  color: var(--text-light) !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }

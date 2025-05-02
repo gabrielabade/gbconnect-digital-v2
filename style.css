@@ -397,6 +397,7 @@ body[data-theme="light"] .highlight::after {
 .nav-link.active::after {
   width: 70%;
   max-width: 100%;
+  opacity: 1;
 }
 
 .nav-contact-btn {
@@ -2900,7 +2901,28 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .navbar.active {
+    background-color: var(--primary-color) !important;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3) !important;
     right: 0;
+  }
+
+  body[data-theme="light"] .navbar.active .nav-link,
+  body[data-theme="dark"] .navbar.active .nav-link {
+    color: var(--text-light) !important;
+  }
+
+  .navbar.active .nav-link::after {
+    bottom: 5px;
+    left: 0;
+    transform: none;
+  }
+
+  .navbar.active .nav-link.active::after {
+    width: 40px;
+  }
+
+  .menu-toggle.active span {
+    background-color: var(--text-light) !important;
   }
 
   .nav-list {

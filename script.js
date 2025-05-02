@@ -71,6 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
     menuToggle.addEventListener('click', function () {
       this.classList.toggle('active');
       navbar.classList.toggle('active');
+
+      // Atualizar cores do menu mobile quando ativado/desativado
+      updateMobileMenuColors();
     });
   }
 
@@ -84,16 +87,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Atualizar logo quando necessário
     updateLogo();
+
+    // Atualizar cores do menu toggle
+    updateToggleMenuColor();
   }
 
-  // 2. Função para destacar o link de navegação ativo
+  // 2. Função melhorada para destacar o link de navegação ativo
   function highlightActiveLink() {
     let currentSection = '';
-    const scrollPosition = window.scrollY + 200;
+    const scrollPosition = window.scrollY + 100; // Ajuste para melhor precisão
 
-    // Encontrar a seção atual
+    // Encontrar a seção atual com cálculo melhorado
     sections.forEach(section => {
-      const sectionTop = section.offsetTop;
+      const sectionTop = section.offsetTop - header.offsetHeight;
       const sectionHeight = section.offsetHeight;
       const sectionId = section.getAttribute('id');
 
@@ -102,17 +108,72 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Atualizar classes ativas
+    // Limpar todas as classes ativas primeiro
     navLinks.forEach(link => {
-      // Remover todas as classes ativas primeiro
       link.classList.remove('active');
-
-      // Adicionar classe ativa ao link correspondente
-      const linkHref = link.getAttribute('href').substring(1); // Remove o #
-      if (linkHref === currentSection) {
-        link.classList.add('active');
-      }
     });
+
+    // Adicionar classe ativa ao link correspondente
+    if (currentSection) {
+      const activeLink = document.querySelector(`.nav-link[href="#${currentSection}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
+    }
+  }
+
+  // Função para atualizar cores do menu mobile
+  function updateMobileMenuColors() {
+    const isMobileNavActive = navbar.classList.contains('active');
+
+    if (isMobileNavActive) {
+      // Forçar cores para o menu mobile quando aberto
+      navLinks.forEach(link => {
+        link.style.color = '#ffffff'; // Branco para ambos os temas
+      });
+
+      // Ajustar cor das barras do toggle quando menu está aberto
+      if (menuToggle) {
+        const spans = menuToggle.querySelectorAll('span');
+        spans.forEach(span => {
+          span.style.backgroundColor = '#ffffff';
+        });
+      }
+    } else {
+      // Resetar para estilos CSS padrão quando menu está fechado
+      navLinks.forEach(link => {
+        link.style.color = '';
+      });
+
+      // Ajustar cor das barras do toggle com base no tema e scroll
+      updateToggleMenuColor();
+    }
+  }
+
+  // Função para ajustar cor do toggle menu
+  function updateToggleMenuColor() {
+    if (!menuToggle) return;
+
+    const currentTheme = document.body.getAttribute('data-theme');
+    const isScrolled = header.classList.contains('scrolled');
+    const spans = menuToggle.querySelectorAll('span');
+
+    if (isScrolled) {
+      // Na versão scrolled, sempre ter barras brancas
+      spans.forEach(span => {
+        span.style.backgroundColor = '#f5f7ff';
+      });
+    } else if (currentTheme === 'light') {
+      // No tema claro não scrolled, barras azuis
+      spans.forEach(span => {
+        span.style.backgroundColor = '#051259';
+      });
+    } else {
+      // No tema escuro não scrolled com header amarelo, barras azuis
+      spans.forEach(span => {
+        span.style.backgroundColor = '#051259';
+      });
+    }
   }
 
   // 3. Função para rolagem suave e controle de cliques
@@ -154,6 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
           // Atualizar URL
           history.pushState(null, null, targetId);
         }
+
+        // Atualizar cores do menu mobile após fechar
+        updateMobileMenuColors();
       });
     });
 
@@ -204,10 +268,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Executar uma vez na inicialização
     updateHeaderOnScroll();
     highlightActiveLink();
+    updateToggleMenuColor();
 
     // Tratar redimensionamento da janela
     window.addEventListener('resize', function () {
       highlightActiveLink();
+      updateToggleMenuColor();
     });
   }
 
@@ -238,6 +304,47 @@ function initThemeToggle() {
       document.body.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
       updateThemeIcons(newTheme);
+
+      // Atualizar também as cores do menu toggle e navbar
+      setTimeout(() => {
+        const header = document.querySelector('.header');
+        const navbar = document.querySelector('.navbar');
+
+        if (navbar.classList.contains('active')) {
+          // Se o menu mobile estiver ativo, atualizar suas cores
+          const navLinks = document.querySelectorAll('.nav-link');
+          navLinks.forEach(link => {
+            link.style.color = '#ffffff';
+          });
+
+          if (document.querySelector('.menu-toggle')) {
+            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+            spans.forEach(span => {
+              span.style.backgroundColor = '#ffffff';
+            });
+          }
+        } else {
+          // Se não estiver, atualizar o menu toggle baseado no tema e scroll
+          if (document.querySelector('.menu-toggle')) {
+            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+            const isScrolled = header.classList.contains('scrolled');
+
+            if (isScrolled) {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#f5f7ff';
+              });
+            } else if (newTheme === 'light') {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#051259';
+              });
+            } else {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#051259';
+              });
+            }
+          }
+        }
+      }, 10);
     });
   });
 }

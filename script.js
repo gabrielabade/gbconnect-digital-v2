@@ -94,21 +94,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 2. Função melhorada para destacar o link de navegação ativo
   function highlightActiveLink() {
-    let currentSection = '';
-    const scrollPosition = window.scrollY + 100; // Ajuste para melhor precisão
+    const scrollPosition = window.scrollY + 100;
 
-    // Encontrar a seção atual com cálculo melhorado
+    // Encontrar a seção mais próxima do topo da janela
+    let currentSection = '';
+    let minDistance = Infinity;
+
     sections.forEach(section => {
       const sectionTop = section.offsetTop - header.offsetHeight;
       const sectionHeight = section.offsetHeight;
-      const sectionId = section.getAttribute('id');
+      const distance = Math.abs(scrollPosition - sectionTop);
 
-      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-        currentSection = sectionId;
+      // Se estamos dentro da seção ou é a mais próxima até agora
+      if ((scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) ||
+        distance < minDistance) {
+        currentSection = section.getAttribute('id');
+        minDistance = distance;
       }
     });
 
-    // Limpar todas as classes ativas primeiro
+    // Limpar todas as classes ativas
     navLinks.forEach(link => {
       link.classList.remove('active');
     });
@@ -281,6 +286,30 @@ document.addEventListener('DOMContentLoaded', function () {
   initNavigation();
 });
 
+
+// Destacar etapa atual do processo durante o scroll
+function highlightCurrentProcessStep() {
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  if (timelineItems.length === 0) return;
+
+  const scrollPosition = window.scrollY + window.innerHeight / 2;
+
+  timelineItems.forEach(item => {
+    const itemTop = item.offsetTop;
+    const itemHeight = item.offsetHeight;
+
+    if (scrollPosition >= itemTop && scrollPosition < itemTop + itemHeight) {
+      item.classList.add('active');
+    } else {
+      item.classList.remove('active');
+    }
+  });
+}
+
+// Adicione ao evento de scroll
+window.addEventListener('scroll', highlightCurrentProcessStep);
+
+
 // Theme Toggle
 function initThemeToggle() {
   const themeToggles = document.querySelectorAll('.theme-toggle');
@@ -399,9 +428,11 @@ function initSwipers() {
       },
       768: {
         slidesPerView: 2,
+        spaceBetween: 30,
       },
       1024: {
         slidesPerView: 3,
+        spaceBetween: 30,
       },
     },
     on: {

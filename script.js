@@ -51,10 +51,12 @@ function updateFooterLogo() {
 // Preloader
 window.addEventListener('load', function () {
   const preloader = document.getElementById('preloader');
-  preloader.classList.add('fade-out');
-  setTimeout(() => {
-    preloader.style.display = 'none';
-  }, 500);
+  if (preloader) {
+    preloader.classList.add('fade-out');
+    setTimeout(() => {
+      preloader.style.display = 'none';
+    }, 500);
+  }
 });
 
 // Navigation.js - Solução completa para o header e navegação
@@ -286,7 +288,6 @@ document.addEventListener('DOMContentLoaded', function () {
   initNavigation();
 });
 
-
 // Destacar etapa atual do processo durante o scroll
 function highlightCurrentProcessStep() {
   const timelineItems = document.querySelectorAll('.timeline-item');
@@ -308,7 +309,6 @@ function highlightCurrentProcessStep() {
 
 // Adicione ao evento de scroll
 window.addEventListener('scroll', highlightCurrentProcessStep);
-
 
 // Theme Toggle
 function initThemeToggle() {
@@ -339,7 +339,7 @@ function initThemeToggle() {
         const header = document.querySelector('.header');
         const navbar = document.querySelector('.navbar');
 
-        if (navbar.classList.contains('active')) {
+        if (navbar && navbar.classList.contains('active')) {
           // Se o menu mobile estiver ativo, atualizar suas cores
           const navLinks = document.querySelectorAll('.nav-link');
           navLinks.forEach(link => {
@@ -356,7 +356,7 @@ function initThemeToggle() {
           // Se não estiver, atualizar o menu toggle baseado no tema e scroll
           if (document.querySelector('.menu-toggle')) {
             const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
-            const isScrolled = header.classList.contains('scrolled');
+            const isScrolled = header && header.classList.contains('scrolled');
 
             if (isScrolled) {
               spans.forEach(span => {
@@ -383,6 +383,7 @@ function updateThemeIcons(theme) {
 
   themeToggles.forEach(toggle => {
     const icon = toggle.querySelector('i');
+    if (!icon) return;
 
     if (theme === 'dark') {
       icon.classList.remove('bx-moon');
@@ -398,112 +399,139 @@ function updateThemeIcons(theme) {
   updateFooterLogo();
 }
 
+// Initialize Theme Toggle
 initThemeToggle();
 
 // Initialize Swipers
 function initSwipers() {
+  if (typeof Swiper === 'undefined') {
+    console.error('Swiper is not defined. Check if the script is loaded correctly.');
+    return;
+  }
+
   // Portfolio Swiper
-  new Swiper('.portfolio-slider', {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    loop: true,
-    grabCursor: true,
-    effect: 'slide',
-    speed: 600,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: '.portfolio-slider .swiper-pagination',
-      clickable: true,
-    },
-    navigation: {
-      nextEl: '.portfolio-slider .swiper-button-next',
-      prevEl: '.portfolio-slider .swiper-button-prev',
-    },
-    breakpoints: {
-      640: {
-        slidesPerView: 1,
+  try {
+    new Swiper('.portfolio-slider', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      grabCursor: true,
+      effect: 'slide',
+      speed: 600,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
       },
-      768: {
-        slidesPerView: 2,
-        spaceBetween: 30,
+      pagination: {
+        el: '.portfolio-slider .swiper-pagination',
+        clickable: true,
       },
-      1024: {
-        slidesPerView: 3,
-        spaceBetween: 30,
+      navigation: {
+        nextEl: '.portfolio-slider .swiper-button-next',
+        prevEl: '.portfolio-slider .swiper-button-prev',
       },
-    },
-    on: {
-      init: function () {
-        setTimeout(() => this.update(), 100);
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 30,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
+      },
+      on: {
+        init: function () {
+          setTimeout(() => this.update(), 100);
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('Error initializing portfolio slider:', error);
+  }
 
   // Testimonials Swiper
-  new Swiper('.testimonials-slider', {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    loop: true,
-    grabCursor: true,
-    effect: 'fade',
-    fadeEffect: {
-      crossFade: true
-    },
-    speed: 800,
-    autoplay: {
-      delay: 6000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: '.testimonials-slider .swiper-pagination',
-      clickable: true,
-    }
-  });
+  try {
+    new Swiper('.testimonials-slider', {
+      slidesPerView: 1,
+      spaceBetween: 30,
+      loop: true,
+      grabCursor: true,
+      effect: 'fade',
+      fadeEffect: {
+        crossFade: true
+      },
+      speed: 800,
+      autoplay: {
+        delay: 6000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.testimonials-slider .swiper-pagination',
+        clickable: true,
+      }
+    });
+  } catch (error) {
+    console.error('Error initializing testimonials slider:', error);
+  }
 }
 
 // Initialize all swipers after the page is fully loaded
-window.addEventListener('load', initSwipers);
+window.addEventListener('load', function () {
+  setTimeout(initSwipers, 500); // Slight delay to ensure DOM is fully ready
+});
 
 // Accordion
-document.querySelectorAll('.accordion-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const accordionItem = header.parentElement;
-    const accordionContent = header.nextElementSibling;
-    const icon = header.querySelector('i');
+document.addEventListener('DOMContentLoaded', function () {
+  const accordionHeaders = document.querySelectorAll('.accordion-header');
+  if (accordionHeaders.length === 0) return;
 
-    // Toggle active class
-    accordionItem.classList.toggle('active');
+  accordionHeaders.forEach(header => {
+    header.addEventListener('click', () => {
+      const accordionItem = header.parentElement;
+      if (!accordionItem) return;
 
-    // Toggle icon
-    if (icon) {
-      icon.classList.toggle('bx-plus');
-      icon.classList.toggle('bx-minus');
-    }
+      const accordionContent = header.nextElementSibling;
+      if (!accordionContent) return;
 
-    // Toggle content visibility
-    if (accordionItem.classList.contains('active')) {
-      accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-    } else {
-      accordionContent.style.maxHeight = '0';
-    }
+      const icon = header.querySelector('i');
 
-    // Close other accordion items
-    document.querySelectorAll('.accordion-item').forEach(item => {
-      if (item !== accordionItem && item.classList.contains('active')) {
-        item.classList.remove('active');
+      // Toggle active class
+      accordionItem.classList.toggle('active');
 
-        const itemIcon = item.querySelector('.accordion-header i');
-        if (itemIcon) {
-          itemIcon.classList.add('bx-plus');
-          itemIcon.classList.remove('bx-minus');
-        }
-
-        const content = item.querySelector('.accordion-content');
-        content.style.maxHeight = '0';
+      // Toggle icon
+      if (icon) {
+        icon.classList.toggle('bx-plus');
+        icon.classList.toggle('bx-minus');
       }
+
+      // Toggle content visibility
+      if (accordionItem.classList.contains('active')) {
+        accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
+      } else {
+        accordionContent.style.maxHeight = '0';
+      }
+
+      // Close other accordion items
+      document.querySelectorAll('.accordion-item').forEach(item => {
+        if (item !== accordionItem && item.classList.contains('active')) {
+          item.classList.remove('active');
+
+          const itemIcon = item.querySelector('.accordion-header i');
+          if (itemIcon) {
+            itemIcon.classList.add('bx-plus');
+            itemIcon.classList.remove('bx-minus');
+          }
+
+          const content = item.querySelector('.accordion-content');
+          if (content) {
+            content.style.maxHeight = '0';
+          }
+        }
+      });
     });
   });
 });
@@ -511,21 +539,21 @@ document.querySelectorAll('.accordion-header').forEach(header => {
 // WhatsApp Form Submission
 function sendToWhatsApp() {
   // Form validation
-  const form = document.getElementById('contactForm');
-  const name = document.getElementById('name').value.trim();
-  const company = document.getElementById('company').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('email').value.trim();
-  const message = document.getElementById('message').value.trim();
+  const name = document.getElementById('name')?.value.trim();
+  const company = document.getElementById('company')?.value.trim();
+  const phone = document.getElementById('phone')?.value.trim();
+  const email = document.getElementById('email')?.value.trim();
+  const message = document.getElementById('message')?.value.trim();
 
-  // Validation checks
+  // Check if all required elements exist
   if (!name || !phone || !email || !message) {
     alert('Por favor, preencha todos os campos obrigatórios.');
     return false;
   }
 
   // Get selected services
-  const services = Array.from(document.querySelectorAll('input[name="service"]:checked'))
+  const servicesChecked = document.querySelectorAll('input[name="service"]:checked');
+  const services = Array.from(servicesChecked)
     .map(checkbox => checkbox.nextElementSibling.textContent.trim())
     .join(", ");
 
@@ -552,10 +580,10 @@ Gostaria de mais informações. Aguardo seu retorno!`;
 // Exit Popup
 function initExitPopup() {
   const exitPopup = document.getElementById('exitPopup');
+  if (!exitPopup) return;
+
   const closePopupBtn = document.querySelector('.popup-close');
   const dismissBtn = document.querySelector('.popup-dismiss');
-
-  if (!exitPopup) return;
 
   // Close popup function
   function closePopup() {
@@ -616,113 +644,159 @@ window.addEventListener('load', initExitPopup);
 
 // Scroll Reveal Animations
 function initScrollReveal() {
-  if (typeof ScrollReveal === 'undefined') return;
+  if (typeof ScrollReveal === 'undefined') {
+    console.warn('ScrollReveal is not defined. Check if the script is loaded correctly.');
+    return;
+  }
 
-  const sr = ScrollReveal({
-    origin: 'bottom',
-    distance: '30px',
-    duration: 800,
-    delay: 200,
-    reset: false,
-    easing: 'ease-in-out'
-  });
+  try {
+    const sr = ScrollReveal({
+      origin: 'bottom',
+      distance: '30px',
+      duration: 800,
+      delay: 200,
+      reset: false,
+      easing: 'ease-in-out'
+    });
 
-  // Hero Section
-  sr.reveal('.hero-title', { origin: 'top', delay: 200 });
-  sr.reveal('.hero-subtitle', { origin: 'top', delay: 300 });
-  sr.reveal('.hero-stats', { delay: 400 });
-  sr.reveal('.mini-services', { delay: 500 });
-  sr.reveal('.hero-cta', { delay: 600 });
-  sr.reveal('.trust-badges', { delay: 700 });
-  sr.reveal('.social-links', { delay: 800 });
-  sr.reveal('.hero-image', { origin: 'right', delay: 300 });
+    // Hero Section
+    sr.reveal('.hero-title', { origin: 'top', delay: 200 });
+    sr.reveal('.hero-subtitle', { origin: 'top', delay: 300 });
+    sr.reveal('.hero-stats', { delay: 400 });
+    sr.reveal('.mini-services', { delay: 500 });
+    sr.reveal('.hero-cta', { delay: 600 });
+    sr.reveal('.trust-badges', { delay: 700 });
+    sr.reveal('.social-links', { delay: 800 });
+    sr.reveal('.hero-image', { origin: 'right', delay: 300 });
 
-  // About Section
-  sr.reveal('.about-image', { origin: 'left', delay: 200 });
-  sr.reveal('.about-text', { origin: 'right', delay: 300 });
+    // About Section
+    sr.reveal('.about-image', { origin: 'left', delay: 200 });
+    sr.reveal('.about-text', { origin: 'right', delay: 300 });
 
-  // Services Section
-  sr.reveal('.service-card', { interval: 200 });
-  sr.reveal('.site-type-card', { interval: 150 });
+    // Services Section
+    sr.reveal('.service-card', { interval: 200 });
+    sr.reveal('.site-type-card', { interval: 150 });
 
-  // Process Section
-  sr.reveal('.timeline-item', { interval: 200 });
-  sr.reveal('.trust-feature', { interval: 150 });
+    // Process Section
+    sr.reveal('.timeline-item', { interval: 200 });
+    sr.reveal('.trust-feature', { interval: 150 });
 
-  // Portfolio Section
-  sr.reveal('.portfolio-slider', { delay: 200 });
+    // Portfolio Section
+    sr.reveal('.portfolio-slider', { delay: 200 });
 
-  // Testimonials Section
-  sr.reveal('.testimonials-slider', { delay: 200 });
+    // Testimonials Section
+    sr.reveal('.testimonials-slider', { delay: 200 });
 
-  // FAQ Section
-  sr.reveal('.accordion-item', { interval: 150 });
+    // FAQ Section
+    sr.reveal('.accordion-item', { interval: 150 });
 
-  // Contact Section
-  sr.reveal('.contact-info', { origin: 'left', delay: 200 });
-  sr.reveal('.contact-form', { origin: 'right', delay: 300 });
+    // Contact Section
+    sr.reveal('.contact-info', { origin: 'left', delay: 200 });
+    sr.reveal('.contact-form', { origin: 'right', delay: 300 });
+  } catch (error) {
+    console.error('Error initializing ScrollReveal:', error);
+  }
 }
 
 // Initialize ScrollReveal after the page is loaded
 window.addEventListener('load', initScrollReveal);
 
-// Particles Animation
+// Particles Animation - VERSÃO CORRIGIDA E MELHORADA
 function initParticles() {
+  console.log('Initializing particles...');
   const canvas = document.getElementById('particles-canvas');
-  if (!canvas) return;
+  if (!canvas) {
+    console.error('Canvas element not found!');
+    return;
+  }
 
   const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    console.error('Could not get 2D context from canvas!');
+    return;
+  }
 
-  // Set canvas size
+  // Definir tamanho do canvas precisamente
   function setCanvasSize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const container = canvas.parentElement;
+    if (!container) {
+      console.error('Canvas parent element not found!');
+      return;
+    }
+
+    // Definir tamanho baseado no container pai
+    canvas.width = container.offsetWidth;
+    canvas.height = container.offsetHeight;
+    console.log(`Canvas resized to ${canvas.width}x${canvas.height}`);
   }
 
   setCanvasSize();
   window.addEventListener('resize', setCanvasSize);
 
-  // Particle configuration
-  const particleCount = window.innerWidth < 768 ? 50 : 100;
+  // Configuração de partículas
+  const particleCount = window.innerWidth < 768 ? 40 : 80; // Aumentado para maior visibilidade
   const particles = [];
   const colors = ['#f23078', '#051259', '#cff305'];
 
-  // Mouse position for interaction
+  // Posição do mouse para interação
   const mouse = {
     x: null,
     y: null,
-    radius: window.innerWidth < 768 ? 80 : 120
+    radius: window.innerWidth < 768 ? 60 : 120 // Aumentado para interação mais visível
   };
 
-  // Track mouse movement
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.x;
-    mouse.y = e.y;
+  // Rastrear movimento do mouse
+  window.addEventListener('mousemove', function (e) {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
   });
 
-  // Reset mouse position when inactive
-  window.addEventListener('mouseout', () => {
+  // Detectar toque na tela para dispositivos móveis
+  window.addEventListener('touchmove', function (e) {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.touches[0].clientX - rect.left;
+    mouse.y = e.touches[0].clientY - rect.top;
+  });
+
+  // Resetar posição do mouse quando inativo
+  window.addEventListener('mouseout', function () {
     mouse.x = null;
     mouse.y = null;
   });
 
-  // Create Particle class
+  canvas.addEventListener('mouseleave', function () {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  window.addEventListener('touchend', function () {
+    setTimeout(function () {
+      mouse.x = null;
+      mouse.y = null;
+    }, 100);
+  });
+
+  // Classe de Partícula
   class Particle {
     constructor() {
       this.x = Math.random() * canvas.width;
       this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 3 + 1;
-      this.speedX = Math.random() * 3 - 1.5;
-      this.speedY = Math.random() * 3 - 1.5;
+      this.size = Math.random() * 3 + 1; // Partículas maiores
+      this.baseX = this.x;
+      this.baseY = this.y;
+      this.density = (Math.random() * 20) + 2;
+      this.speedX = Math.random() * 1 - 0.5; // Velocidade aumentada
+      this.speedY = Math.random() * 1 - 0.5; // Velocidade aumentada
       this.color = colors[Math.floor(Math.random() * colors.length)];
     }
 
     update() {
-      // Move particles
+      // Movimento natural
       this.x += this.speedX;
       this.y += this.speedY;
 
-      // Bounce off edges
+      // Inverter direção nas bordas
       if (this.x < 0 || this.x > canvas.width) {
         this.speedX = -this.speedX;
       }
@@ -731,7 +805,7 @@ function initParticles() {
         this.speedY = -this.speedY;
       }
 
-      // Interaction with mouse
+      // Interação com mouse - efeito forte para melhor visualização
       if (mouse.x != null && mouse.y != null) {
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
@@ -742,29 +816,41 @@ function initParticles() {
           const forceDirectionY = dy / distance;
           const force = (mouse.radius - distance) / mouse.radius;
 
-          this.speedX += forceDirectionX * force;
-          this.speedY += forceDirectionY * force;
+          this.speedX += forceDirectionX * force * 0.6; // Aumento do efeito
+          this.speedY += forceDirectionY * force * 0.6; // Aumento do efeito
         }
       }
+
+      // Retorno suave à posição original
+      const dx = this.baseX - this.x;
+      const dy = this.baseY - this.y;
+      this.speedX += dx * 0.01;
+      this.speedY += dy * 0.01;
+
+      // Reduzir velocidade com o tempo (atrito)
+      this.speedX *= 0.96;
+      this.speedY *= 0.96;
     }
 
     draw() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fillStyle = this.color;
-      ctx.globalAlpha = 0.7;
+      ctx.globalAlpha = 0.8; // Aumentar opacidade para maior visibilidade
       ctx.fill();
     }
   }
 
-  // Initialize particles
+  // Inicializar partículas
   function initParticleSystem() {
+    particles.length = 0; // Limpar partículas existentes
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
     }
+    console.log(`Created ${particles.length} particles`);
   }
 
-  // Draw connecting lines between close particles
+  // Desenhar linhas conectando partículas próximas
   function connectParticles() {
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -772,11 +858,11 @@ function initParticles() {
         const dy = particles[i].y - particles[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 120) {
+        if (distance < 120) { // Aumentar distância de conexão
           const opacity = 1 - (distance / 120);
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(5, 18, 89, ${opacity * 0.2})`;
-          ctx.lineWidth = 1;
+          ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`; // Linha mais visível
+          ctx.lineWidth = 0.6; // Linha mais visível
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.stroke();
@@ -785,7 +871,7 @@ function initParticles() {
     }
   }
 
-  // Animation loop
+  // Loop de animação
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -798,16 +884,41 @@ function initParticles() {
     requestAnimationFrame(animate);
   }
 
-  // Start particle animation
+  // Iniciar sistema de partículas
   initParticleSystem();
   animate();
+
+  console.log('Particles animation started successfully');
+
+  // Verificação para checar se as partículas estão realmente visíveis
+  setTimeout(() => {
+    const pixelCheck = ctx.getImageData(canvas.width / 2, canvas.height / 2, 1, 1);
+    const hasContent = pixelCheck.data[3] > 0; // Verificar se tem opacidade
+    if (!hasContent) {
+      console.warn('Particles may not be visible. Checking canvas state...');
+      console.log('Canvas dimensions:', canvas.width, canvas.height);
+      console.log('Particle count:', particles.length);
+    }
+  }, 1000);
 }
 
-// Initialize particles after the page is loaded
-window.addEventListener('load', initParticles);
+// Initialize particles after the page is fully loaded
+document.addEventListener('DOMContentLoaded', function () {
+  // Verificar se o elemento canvas existe
+  const canvas = document.getElementById('particles-canvas');
+  if (canvas) {
+    console.log('Canvas found during DOMContentLoaded, waiting for full page load...');
+  } else {
+    console.error('Canvas element not found during DOMContentLoaded!');
+  }
+});
 
-// Garantir que os logos estejam corretos após o carregamento completo
 window.addEventListener('load', function () {
+  console.log('Window loaded, initializing particles...');
+  // Pequeno atraso para garantir que tudo esteja renderizado
+  setTimeout(initParticles, 300);
+
+  // Garantir que os logos estejam corretos após o carregamento completo
   updateLogo();
   updateFooterLogo();
 });

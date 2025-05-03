@@ -651,8 +651,10 @@ body[data-theme="light"] .btn-outline {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 1;
+  height: 100vh;
+  z-index: 3;
+  /* Acima do background, mas abaixo do conteúdo */
+  pointer-events: none;
 }
 
 .hero .container {
@@ -660,15 +662,15 @@ body[data-theme="light"] .btn-outline {
   align-items: center;
   justify-content: space-between;
   gap: 3rem;
-  max-width: 1200px;
-  width: 92%;
+  max-width: 1600px;
+  width: 95%;
   margin: 0 auto;
   z-index: 2;
 }
 
 .hero-content {
   flex: 1;
-  max-width: 700px;
+  max-width: 800px;
   margin: 0 auto;
   text-align: center;
   padding: 4rem 0;
@@ -698,12 +700,15 @@ body[data-theme="light"] .btn-outline {
 }
 
 .stat-highlight {
-  padding: 2rem;
+  max-width: 800px;
+  font-size: 1.7rem;
+  line-height: 1.6;
+  padding: 1.8rem 2.5rem;
   background: rgba(5, 18, 89, 0.8);
   border-left: 4px solid var(--secondary-color);
   border-radius: var(--border-radius-md);
-  margin-bottom: 2rem;
-  text-align: start;
+  margin: 0 auto 1.5rem;
+  text-align: left;
 }
 
 body[data-theme="light"] .stat-highlight {
@@ -872,8 +877,13 @@ body[data-theme="light"] .trust-badge:hover {
 
 .trust-badge i {
   font-size: 2rem;
-  color: var(--secondary-color);
+  color: var(--bg-dark);
 }
+
+body[data-theme="dark"] .trust-badge i {
+  color: var(--text-light);
+}
+
 
 .trust-badge span {
   font-size: 1.4rem;
@@ -944,7 +954,7 @@ body[data-theme="light"] .hero-wave svg {
 /* ==================== SECTION HEADERS ==================== */
 .section-header {
   text-align: center;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto 5rem;
 }
 
@@ -1051,15 +1061,20 @@ body[data-theme="light"] .cta-text {
 
 /* ==================== SERVICES SECTION ==================== */
 .services {
-  padding: 10rem 0;
-  position: relative;
+  padding: 8rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 3rem;
-  margin-bottom: 6rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto 6rem;
+  flex-grow: 1;
 }
 
 .service-card {
@@ -1069,9 +1084,10 @@ body[data-theme="light"] .cta-text {
   box-shadow: var(--card-shadow);
   position: relative;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  flex: 1;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .service-card::before {
@@ -1106,7 +1122,11 @@ body[data-theme="light"] .testimonial {
 }
 
 .service-header {
-  padding: 3rem 2.5rem 2rem;
+  padding: 35px 20px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1118,7 +1138,7 @@ body[data-theme="light"] .service-header {
 .service-icon {
   font-size: 4.5rem;
   color: var(--accent-color);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   display: inline-block;
   transition: all var(--transition-medium);
 }
@@ -1132,7 +1152,11 @@ body[data-theme="light"] .service-icon {
 }
 
 .service-title {
-  font-size: 2.2rem;
+  font-size: 2.5rem;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-color);
   margin-bottom: 0;
 }
@@ -1140,27 +1164,33 @@ body[data-theme="light"] .service-icon {
 .service-tag {
   background: var(--secondary-color);
   color: var(--text-light);
-  padding: 1.2rem 2rem;
+  padding: 16px 15px;
   font-family: var(--font-primary);
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-size: 1.4rem;
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  padding: 1.2rem 1.5rem;
+  font-size: 1.3rem;
 }
 
 .service-content {
-  padding: 2.5rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  padding: 2.5rem;
 }
 
 .benefits-title {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   text-align: center;
   color: var(--text-color);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   position: relative;
 }
 
@@ -1173,8 +1203,8 @@ body[data-theme="light"] .service-icon {
 }
 
 .service-benefits {
-  margin-bottom: 3rem;
   flex-grow: 1;
+  margin-bottom: 2rem;
 }
 
 .service-benefits li {
@@ -2989,9 +3019,22 @@ body[data-theme="light"] .whatsapp-float {
     flex-direction: column;
   }
 
-  .about-image,
+
   .about-text {
-    max-width: 100%;
+    max-width: 95%;
+    margin: 0 auto 1rem;
+  }
+
+  .about-image {
+    max-width: 70%;
+    margin: 0 auto;
+  }
+
+  .about-image img {
+    width: 200px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
   }
 
   .timeline-content {
@@ -3009,6 +3052,67 @@ body[data-theme="light"] .whatsapp-float {
 
   .trust-features {
     grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .services-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .service-card {
+    width: 100%;
+    max-width: 500px;
+    /* Aumentar a largura máxima em tablets */
+  }
+
+  .site-types-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 576px) {
+  .services-grid {
+    gap: 20px;
+  }
+
+  .service-card {
+    min-width: unset;
+    width: 90%;
+    margin-bottom: 30px;
+  }
+
+  .service-header {
+    padding: 25px 15px;
+    min-height: 100px;
+  }
+
+  .service-title {
+    font-size: 2.2rem;
+  }
+
+  .service-icon {
+    font-size: 4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .service-content {
+    padding: 2rem;
+  }
+
+  .service-benefits li {
+    margin-bottom: 1.5rem;
+  }
+
+  .site-types-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .site-type-card {
+    padding: 2.5rem 1.5rem;
   }
 }
 
@@ -3456,4 +3560,31 @@ body[data-theme="dark"] .nav-link {
 .header.scrolled .theme-toggle {
   color: var(--text-light) !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+@media (max-width: 350px) {
+  .service-card {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .service-header {
+    padding: 20px 10px;
+  }
+
+  .service-content {
+    padding: 1.5rem;
+  }
+
+  .service-title {
+    font-size: 2rem;
+  }
+
+  .benefit-header {
+    font-size: 1.5rem;
+  }
+
+  .benefit-desc {
+    font-size: 1.3rem;
+  }
 }

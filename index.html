@@ -1068,105 +1068,64 @@
       <!-- Contact Section -->
       <section id="contact" class="contact section-light">
         <div class="container">
-          <div class="section-header">
-            <h2 class="section-title">Transforme seu <span class="highlight">Negócio</span></h2>
-            <p class="section-subtitle">Dê o primeiro passo para destacar sua presença online</p>
-            <div class="section-line"></div>
-          </div>
-
-          <div class="contact-container">
-            <div class="contact-info">
-              <h3>Vamos Conversar!</h3>
-              <p>Preencha o formulário para receber gratuitamente um diagnóstico digital personalizado e uma proposta
-                sob medida para sua necessidade específica.</p>
-
-              <div class="contact-methods">
-                <div class="contact-method">
-                  <i class="bx bxl-whatsapp"></i>
-                  <div>
-                    <h4>WhatsApp</h4>
-                    <a href="https://wa.me/5548991056014" target="_blank" rel="noopener">(48) 99105-6014</a>
-                  </div>
-                </div>
-
-                <div class="contact-method">
-                  <i class="bx bx-envelope"></i>
-                  <div>
-                    <h4>Email</h4>
-                    <a href="mailto:contato@gbconnect.digital">contato@gbconnect.digital</a>
-                  </div>
-                </div>
-
-                <div class="contact-method">
-                  <i class="bx bxl-instagram"></i>
-                  <div>
-                    <h4>Instagram</h4>
-                    <a href="https://www.instagram.com/gbconnect.digital" target="_blank"
-                      rel="noopener">@gbconnect.digital</a>
-                  </div>
-                </div>
-              </div>
+          <div class="contact-wrapper">
+            <!-- Lado esquerdo - Título, subtítulo e imagem -->
+            <div class="contact-left">
+              <h2 class="section-title">Dê o Primeiro Passo para <span class="highlight">Transformar seu Negócio</span>
+              </h2>
+              <p class="section-subtitle">Preencha o formulário para receber gratuitamente um diagnóstico digital
+                personalizado e uma proposta sob medida para sua necessidade específica.</p>
+              <!-- Section line removida conforme solicitado -->
 
               <div class="contact-image">
-                <img src="images/contact-illustration.webp" alt="Entre em contato" loading="lazy">
+                <img src="./images/contact-illustration.webp" alt="Transformação Digital" loading="lazy">
               </div>
             </div>
 
+            <!-- Lado direito - Formulário de contato -->
             <div class="contact-form">
-              <form id="contactForm" class="styled-form">
-                <div class="form-group">
-                  <div class="form-row">
-                    <div class="form-field">
-                      <label for="name">Nome completo *</label>
-                      <input type="text" id="name" placeholder="Digite seu nome" required>
-                    </div>
-
-                    <div class="form-field">
-                      <label for="company">Empresa</label>
-                      <input type="text" id="company" placeholder="Nome da empresa (opcional)">
-                    </div>
-                  </div>
+              <form id="contactForm">
+                <div class="form-row">
+                  <input type="text" id="name" placeholder="Seu nome completo" required>
+                  <input type="text" id="company" placeholder="Nome da empresa (opcional)">
                 </div>
 
-                <div class="form-group">
-                  <div class="form-row">
-                    <div class="form-field">
-                      <label for="phone">WhatsApp para contato *</label>
-                      <input type="tel" id="phone" placeholder="(XX) XXXXX-XXXX" required>
-                    </div>
-
-                    <div class="form-field">
-                      <label for="email">Seu melhor email *</label>
-                      <input type="email" id="email" placeholder="exemplo@email.com" required>
-                    </div>
-                  </div>
+                <div class="form-row">
+                  <input type="tel" id="phone" placeholder="Seu WhatsApp para contato" required>
+                  <input type="email" id="email" placeholder="Seu melhor e-mail" required>
                 </div>
 
-                <div class="form-group">
-                  <label>Quais serviços você precisa?</label>
-                  <div class="services-options">
+                <div class="services-options">
+                  <p>Quais serviços você precisa?</p>
+                  <div class="services-checkboxes">
                     <label class="service-option">
-                      <input type="checkbox" name="service" value="site">
-                      <span>Site Profissional</span>
+                      <div class="custom-checkbox">
+                        <input type="checkbox" name="service" value="site">
+                        <span class="checkmark"></span>
+                      </div>
+                      <span class="checkbox-text">Site Profissional</span>
                     </label>
                     <label class="service-option">
-                      <input type="checkbox" name="service" value="google">
-                      <span>Google Meu Negócio</span>
+                      <div class="custom-checkbox">
+                        <input type="checkbox" name="service" value="google">
+                        <span class="checkmark"></span>
+                      </div>
+                      <span class="checkbox-text">Google Meu Negócio</span>
                     </label>
                     <label class="service-option">
-                      <input type="checkbox" name="service" value="socialmedia">
-                      <span>Gestão de Redes Sociais</span>
+                      <div class="custom-checkbox">
+                        <input type="checkbox" name="service" value="redes">
+                        <span class="checkmark"></span>
+                      </div>
+                      <span class="checkbox-text">Gestão de Redes Sociais</span>
                     </label>
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label for="message">Sobre seu negócio e necessidades *</label>
-                  <textarea id="message" rows="5" placeholder="Descreva brevemente suas necessidades"
-                    required></textarea>
-                </div>
+                <textarea id="message" placeholder="Conte-nos um pouco sobre o seu negócio e suas necessidades..."
+                  required></textarea>
 
-                <button type="button" class="btn btn-primary btn-large" onclick="sendToWhatsApp()">
+                <button type="button" class="submit-btn" onclick="sendToWhatsApp()">
                   <i class="bx bx-send"></i> Receber Diagnóstico Digital Gratuito
                 </button>
               </form>

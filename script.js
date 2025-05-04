@@ -551,10 +551,27 @@ function sendToWhatsApp() {
     return false;
   }
 
-  // Get selected services
+  // Get selected services - versão atualizada para os checkboxes personalizados
   const servicesChecked = document.querySelectorAll('input[name="service"]:checked');
   const services = Array.from(servicesChecked)
-    .map(checkbox => checkbox.nextElementSibling.textContent.trim())
+    .map(checkbox => {
+      const serviceValue = checkbox.value;
+      let serviceName = '';
+
+      switch (serviceValue) {
+        case 'site':
+          serviceName = 'Site Profissional';
+          break;
+        case 'google':
+          serviceName = 'Google Meu Negócio';
+          break;
+        case 'redes':
+          serviceName = 'Gestão de Redes Sociais';
+          break;
+      }
+
+      return serviceName;
+    })
     .join(", ");
 
   // Format WhatsApp message
@@ -576,6 +593,23 @@ Gostaria de mais informações. Aguardo seu retorno!`;
 
   return true;
 }
+
+// Adicionar classe 'selected' para opções de serviço quando selecionadas
+document.addEventListener('DOMContentLoaded', function () {
+  const serviceOptions = document.querySelectorAll('.service-option');
+
+  serviceOptions.forEach(option => {
+    const checkbox = option.querySelector('input[type="checkbox"]');
+
+    checkbox.addEventListener('change', function () {
+      if (this.checked) {
+        option.classList.add('selected');
+      } else {
+        option.classList.remove('selected');
+      }
+    });
+  });
+});
 
 // Exit Popup
 function initExitPopup() {
@@ -690,8 +724,8 @@ function initScrollReveal() {
     // FAQ Section
     sr.reveal('.accordion-item', { interval: 150 });
 
-    // Contact Section
-    sr.reveal('.contact-info', { origin: 'left', delay: 200 });
+    // Contact Section - atualizado para nova estrutura
+    sr.reveal('.contact-left', { origin: 'left', delay: 200 });
     sr.reveal('.contact-form', { origin: 'right', delay: 300 });
   } catch (error) {
     console.error('Error initializing ScrollReveal:', error);

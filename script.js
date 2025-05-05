@@ -784,7 +784,7 @@ function initScrollReveal() {
 // Initialize ScrollReveal after the page is loaded
 window.addEventListener('load', initScrollReveal);
 
-// Particles Animation - VERSÃO CORRIGIDA E MELHORADA
+// Particles Animation - VERSÃO OTIMIZADA E PROFISSIONAL
 function initParticles() {
   console.log('Initializing particles...');
   const canvas = document.getElementById('particles-canvas');
@@ -807,25 +807,45 @@ function initParticles() {
       return;
     }
 
-    // Definir tamanho baseado no container pai
     canvas.width = container.offsetWidth;
     canvas.height = container.offsetHeight;
     console.log(`Canvas resized to ${canvas.width}x${canvas.height}`);
   }
 
   setCanvasSize();
-  window.addEventListener('resize', setCanvasSize);
+  window.addEventListener('resize', () => {
+    setCanvasSize();
+    initParticleSystem(); // Reinicializar partículas quando o tamanho mudar
+  });
 
-  // Configuração de partículas
-  const particleCount = window.innerWidth < 768 ? 40 : 80; // Aumentado para maior visibilidade
-  const particles = [];
-  const colors = ['#f23078', '#051259', '#cff305'];
+  // Detecção de tema para adaptação de cores
+  const isDarkTheme = () => document.body.getAttribute('data-theme') !== 'light';
+
+  // Configuração de partículas adaptativa ao tema
+  function getThemeColors() {
+    if (isDarkTheme()) {
+      return ['rgba(242, 48, 120, 0.5)', 'rgba(207, 243, 5, 0.5)', 'rgba(255, 255, 255, 0.3)'];
+    } else {
+      return ['rgba(5, 18, 89, 0.4)', 'rgba(242, 48, 120, 0.3)', 'rgba(0, 0, 0, 0.1)'];
+    }
+  }
+
+  // Configurações responsivas
+  const getParticleCount = () => window.innerWidth < 768 ? 50 : (window.innerWidth < 1200 ? 80 : 100);
+  const getConnectionDistance = () => window.innerWidth < 768 ? 100 : 150;
+  const getMouseRadius = () => window.innerWidth < 768 ? 80 : 120;
+
+  // Configurações dinâmicas
+  let particleCount = getParticleCount();
+  let connectionDistance = getConnectionDistance();
+  let particles = [];
+  let colors = getThemeColors();
 
   // Posição do mouse para interação
   const mouse = {
     x: null,
     y: null,
-    radius: window.innerWidth < 768 ? 60 : 120 // Aumentado para interação mais visível
+    radius: getMouseRadius()
   };
 
   // Rastrear movimento do mouse
@@ -860,35 +880,53 @@ function initParticles() {
     }, 100);
   });
 
-  // Classe de Partícula
+  // Classe de Partícula melhorada
   class Particle {
     constructor() {
       this.x = Math.random() * canvas.width;
       this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 3 + 1; // Partículas maiores
+      this.size = Math.random() * 2.5 + 0.5;
       this.baseX = this.x;
       this.baseY = this.y;
-      this.density = (Math.random() * 20) + 2;
-      this.speedX = Math.random() * 1 - 0.5; // Velocidade aumentada
-      this.speedY = Math.random() * 1 - 0.5; // Velocidade aumentada
+      this.density = (Math.random() * 15) + 5;
+      this.speedX = Math.random() * 0.8 - 0.4;
+      this.speedY = Math.random() * 0.8 - 0.4;
+      this.color = colors[Math.floor(Math.random() * colors.length)];
+      this.angle = Math.random() * 360;
+      this.pulsate = Math.random() * 0.05 + 0.01;
+      this.pulsateDirection = Math.random() > 0.5 ? 1 : -1;
+      this.originalSize = this.size;
+    }
+
+    // Atualizar cor quando o tema mudar
+    updateColor() {
       this.color = colors[Math.floor(Math.random() * colors.length)];
     }
 
     update() {
-      // Movimento natural
-      this.x += this.speedX;
-      this.y += this.speedY;
+      // Movimentação com rotação suave
+      this.angle += 0.2;
+      this.x += this.speedX + Math.sin(this.angle * Math.PI / 180) * 0.05;
+      this.y += this.speedY + Math.cos(this.angle * Math.PI / 180) * 0.05;
 
-      // Inverter direção nas bordas
+      // Pulsar tamanho para efeito de vida
+      this.size += this.pulsate * this.pulsateDirection;
+      if (this.size > this.originalSize * 1.5 || this.size < this.originalSize * 0.7) {
+        this.pulsateDirection *= -1;
+      }
+
+      // Inverter direção nas bordas com suavidade
       if (this.x < 0 || this.x > canvas.width) {
-        this.speedX = -this.speedX;
+        this.speedX = -this.speedX * 0.95;
+        this.x = Math.max(0, Math.min(this.x, canvas.width));
       }
 
       if (this.y < 0 || this.y > canvas.height) {
-        this.speedY = -this.speedY;
+        this.speedY = -this.speedY * 0.95;
+        this.y = Math.max(0, Math.min(this.y, canvas.height));
       }
 
-      // Interação com mouse - efeito forte para melhor visualização
+      // Interação com mouse aprimorada
       if (mouse.x != null && mouse.y != null) {
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
@@ -898,28 +936,33 @@ function initParticles() {
           const forceDirectionX = dx / distance;
           const forceDirectionY = dy / distance;
           const force = (mouse.radius - distance) / mouse.radius;
+          const pushFactor = 0.65;
 
-          this.speedX += forceDirectionX * force * 0.6; // Aumento do efeito
-          this.speedY += forceDirectionY * force * 0.6; // Aumento do efeito
+          this.speedX += forceDirectionX * force * pushFactor;
+          this.speedY += forceDirectionY * force * pushFactor;
+
+          // Aumentar temporariamente o tamanho quando interagindo
+          this.size = Math.min(this.size * 1.03, this.originalSize * 2.5);
         }
       }
 
-      // Retorno suave à posição original
-      const dx = this.baseX - this.x;
-      const dy = this.baseY - this.y;
-      this.speedX += dx * 0.01;
-      this.speedY += dy * 0.01;
-
-      // Reduzir velocidade com o tempo (atrito)
+      // Amortecimento de velocidade
       this.speedX *= 0.96;
       this.speedY *= 0.96;
+
+      // Retorno suave à posição original
+      if (Math.abs(this.x - this.baseX) > 150 || Math.abs(this.y - this.baseY) > 150) {
+        const dx = this.baseX - this.x;
+        const dy = this.baseY - this.y;
+        this.speedX += dx * 0.0005 * this.density;
+        this.speedY += dy * 0.0005 * this.density;
+      }
     }
 
     draw() {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fillStyle = this.color;
-      ctx.globalAlpha = 0.8; // Aumentar opacidade para maior visibilidade
       ctx.fill();
     }
   }
@@ -927,13 +970,18 @@ function initParticles() {
   // Inicializar partículas
   function initParticleSystem() {
     particles.length = 0; // Limpar partículas existentes
+    particleCount = getParticleCount();
+    connectionDistance = getConnectionDistance();
+    mouse.radius = getMouseRadius();
+    colors = getThemeColors();
+
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
     }
     console.log(`Created ${particles.length} particles`);
   }
 
-  // Desenhar linhas conectando partículas próximas
+  // Desenhar linhas conectando partículas próximas com gradientes
   function connectParticles() {
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
@@ -941,11 +989,24 @@ function initParticles() {
         const dy = particles[i].y - particles[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 120) { // Aumentar distância de conexão
-          const opacity = 1 - (distance / 120);
+        if (distance < connectionDistance) {
+          const opacity = 1 - (distance / connectionDistance);
+
+          // Gradiente para linhas mais interessantes
+          const gradient = ctx.createLinearGradient(
+            particles[i].x, particles[i].y,
+            particles[j].x, particles[j].y
+          );
+
+          // Extrai as cores base das partículas para o gradiente
+          gradient.addColorStop(0, particles[i].color);
+          gradient.addColorStop(1, particles[j].color);
+
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.3})`; // Linha mais visível
-          ctx.lineWidth = 0.6; // Linha mais visível
+          ctx.strokeStyle = isDarkTheme()
+            ? `rgba(255, 255, 255, ${opacity * 0.25})`
+            : `rgba(5, 18, 89, ${opacity * 0.15})`;
+          ctx.lineWidth = Math.min(particles[i].size, particles[j].size) * 0.3;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.stroke();
@@ -954,16 +1015,26 @@ function initParticles() {
     }
   }
 
-  // Loop de animação
+  // Loop de animação aprimorado
   function animate() {
+    // Efeito de rastro suave
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Adicionar desvanecimento para rastro sutil
+    ctx.fillStyle = isDarkTheme()
+      ? 'rgba(5, 25, 69, 0.04)'
+      : 'rgba(245, 247, 255, 0.04)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Primeiro desenhar as conexões para ficarem abaixo das partículas
+    connectParticles();
+
+    // Depois desenhar as partículas
     for (let i = 0; i < particles.length; i++) {
       particles[i].update();
       particles[i].draw();
     }
 
-    connectParticles();
     requestAnimationFrame(animate);
   }
 
@@ -973,10 +1044,22 @@ function initParticles() {
 
   console.log('Particles animation started successfully');
 
-  // Verificação para checar se as partículas estão realmente visíveis
+  // Monitorar mudanças de tema para adaptar cores
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.attributeName === 'data-theme') {
+        colors = getThemeColors();
+        particles.forEach(particle => particle.updateColor());
+      }
+    });
+  });
+
+  observer.observe(document.body, { attributes: true });
+
+  // Verificação para garantir que partículas estejam visíveis
   setTimeout(() => {
     const pixelCheck = ctx.getImageData(canvas.width / 2, canvas.height / 2, 1, 1);
-    const hasContent = pixelCheck.data[3] > 0; // Verificar se tem opacidade
+    const hasContent = pixelCheck.data[3] > 0;
     if (!hasContent) {
       console.warn('Particles may not be visible. Checking canvas state...');
       console.log('Canvas dimensions:', canvas.width, canvas.height);
@@ -985,9 +1068,8 @@ function initParticles() {
   }, 1000);
 }
 
-// Initialize particles after the page is fully loaded
+// Inicializar partículas após carregamento completo
 document.addEventListener('DOMContentLoaded', function () {
-  // Verificar se o elemento canvas existe
   const canvas = document.getElementById('particles-canvas');
   if (canvas) {
     console.log('Canvas found during DOMContentLoaded, waiting for full page load...');

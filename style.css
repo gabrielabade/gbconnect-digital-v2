@@ -171,7 +171,7 @@ body[data-theme="light"] .portfolio-item {
 .portfolio-item:hover,
 .testimonial:hover {
   transform: translateY(-3px);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
 }
 
 body[data-theme="light"] .service-card:hover,
@@ -179,7 +179,7 @@ body[data-theme="light"] .site-type-card:hover,
 body[data-theme="light"] .portfolio-item:hover,
 body[data-theme="light"] .testimonial:hover {
   transform: translateY(-3px);
-  box-shadow: 0 2px 5px rgba(5, 18, 89, 0.03);
+  box-shadow: none;
 }
 
 /* Reset global */
@@ -278,7 +278,7 @@ h6 {
 .portfolio-item,
 .testimonial,
 .contact-form {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: none;
   border: 1px solid rgba(255, 255, 255, 0.06);
   transition: all 0.4s ease;
   overflow: hidden;
@@ -1220,7 +1220,7 @@ body[data-theme="light"] .service-card {
 
 .service-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  box-shadow: none;
 }
 
 .service-card:hover::before {
@@ -1228,14 +1228,14 @@ body[data-theme="light"] .service-card {
 }
 
 body[data-theme="light"] .service-card:hover {
-  box-shadow: 0 15px 35px rgba(5, 18, 89, 0.15);
+  box-shadow: none;
 }
 
 body[data-theme="light"] .service-card,
 body[data-theme="light"] .site-type-card,
 body[data-theme="light"] .portfolio-item,
 body[data-theme="light"] .testimonial {
-  box-shadow: 0 15px 50px rgba(5, 18, 89, 0.06);
+  box-shadow: none;
 }
 
 .service-header {

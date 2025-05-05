@@ -96,32 +96,73 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 2. Função melhorada para destacar o link de navegação ativo
   function highlightActiveLink() {
-    const scrollPosition = window.scrollY + 100;
+    // Ajustar ponto de referência para melhor detecção
+    const scrollPosition = window.scrollY + (window.innerHeight * 0.15); // 15% da altura da janela
 
-    // Encontrar a seção mais próxima do topo da janela
-    let currentSection = '';
-    let minDistance = Infinity;
+    // Armazenar informações sobre todas as seções
+    const sectionsData = [];
 
+    // Coletar dados de todas as seções
     sections.forEach(section => {
-      const sectionTop = section.offsetTop - header.offsetHeight;
-      const sectionHeight = section.offsetHeight;
-      const distance = Math.abs(scrollPosition - sectionTop);
+      const id = section.getAttribute('id');
+      const top = section.offsetTop - header.offsetHeight - 10; // Pequeno offset adicional
+      const bottom = top + section.offsetHeight;
+      const height = section.offsetHeight;
+      const middle = top + (height / 2);
 
-      // Se estamos dentro da seção ou é a mais próxima até agora
-      if ((scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) ||
-        distance < minDistance) {
-        currentSection = section.getAttribute('id');
-        minDistance = distance;
+      sectionsData.push({
+        id: id,
+        top: top,
+        bottom: bottom,
+        middle: middle,
+        height: height
+      });
+    });
+
+    // Ordenar seções verticalmente (do topo para baixo)
+    sectionsData.sort((a, b) => a.top - b.top);
+
+    // Encontrar seção atual usando algoritmo mais preciso
+    let currentSection = '';
+
+    // 1. Primeiro, verificar se estamos dentro de alguma seção
+    let inSection = false;
+    for (const section of sectionsData) {
+      if (scrollPosition >= section.top && scrollPosition < section.bottom) {
+        currentSection = section.id;
+        inSection = true;
+        break;
       }
-    });
+    }
 
-    // Limpar todas as classes ativas
-    navLinks.forEach(link => {
-      link.classList.remove('active');
-    });
+    // 2. Se não estamos dentro de nenhuma seção, encontrar a mais próxima
+    if (!inSection) {
+      let closestSection = null;
+      let minDistance = Infinity;
 
-    // Adicionar classe ativa ao link correspondente
+      for (const section of sectionsData) {
+        // Calcular distância absoluta entre o ponto de scroll e o meio da seção
+        const distance = Math.abs(scrollPosition - section.middle);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          closestSection = section;
+        }
+      }
+
+      if (closestSection) {
+        currentSection = closestSection.id;
+      }
+    }
+
+    // 3. Aplicar classe ativa apenas se encontrou uma seção
     if (currentSection) {
+      // Remover classes ativas de todos os links
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+      });
+
+      // Adicionar classe ativa ao link correspondente
       const activeLink = document.querySelector(`.nav-link[href="#${currentSection}"]`);
       if (activeLink) {
         activeLink.classList.add('active');
@@ -263,12 +304,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 4. Inicializar todas as funções
   function initNavigation() {
-    // Aplicar tratamento de scroll
+    // Aplicar tratamento de scroll com throttling para melhor performance
+    let isScrolling = false;
+
     window.addEventListener('scroll', function () {
       updateHeaderOnScroll();
-      highlightActiveLink();
+      // highlightActiveLink();
     });
-
+    if (!isScrolling) {
+      isScrolling = true;
+      requestAnimationFrame(function () {
+        highlightActiveLink();
+        isScrolling = false;
+      });
+    }
     // Preparar rolagem suave
     setupSmoothScrolling();
 

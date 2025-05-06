@@ -202,6 +202,8 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-secondary);
   font-size: 1.6rem;
   line-height: 1.6;
@@ -210,6 +212,17 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   transition: background-color var(--transition-medium);
+}
+
+body>*:not(.footer) {
+  flex-shrink: 0;
+  /* Evita que elementos encolham */
+}
+
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .container {
@@ -2865,6 +2878,7 @@ body[data-theme="dark"] .service-option .checkbox-text {
   position: relative;
   width: 100vw;
   margin-left: calc(-50vw + 50%);
+  margin-top: auto;
   margin-bottom: 0;
   padding-bottom: 0;
   bottom: 0;

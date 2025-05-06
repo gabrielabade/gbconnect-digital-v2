@@ -2133,6 +2133,14 @@ body[data-theme="light"] .faq::before {
   position: relative;
   z-index: 2;
 }
+#faq p a {
+  color: var(--secondary-color);
+  text-decoration: underline;
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 2px;
+  font-weight: bold;
+  transition: all var(--transition-fast);
+}
 
 .accordion {
   max-width: 900px;

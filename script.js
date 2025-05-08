@@ -79,6 +79,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // Função para sincronizar corretamente os efeitos visuais dos links ativos
+  function syncActiveLinks() {
+    // Esta função garante que apenas um link tenha a classe 'active'
+    // e que o efeito visual seja consistente
+    const activeLinks = document.querySelectorAll('.nav-link.active');
+
+    // Se houver mais de um link ativo, manter apenas o mais recente
+    if (activeLinks.length > 1) {
+      // Remover a classe de todos exceto o último
+      for (let i = 0; i < activeLinks.length - 1; i++) {
+        activeLinks[i].classList.remove('active');
+      }
+    }
+  }
+
   // 1. Função para atualizar a aparência do header no scroll
   function updateHeaderOnScroll() {
     if (window.scrollY > 50) {
@@ -166,6 +181,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const activeLink = document.querySelector(`.nav-link[href="#${currentSection}"]`);
       if (activeLink) {
         activeLink.classList.add('active');
+        // Sincronizar links ativos após adicionar a classe
+        syncActiveLinks();
       }
     }
   }
@@ -226,6 +243,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // 3. Função para rolagem suave e controle de cliques
   function setupSmoothScrolling() {
+    // Flag para controlar se o destaque automático deve ser pausado
+    let isManualScroll = false;
+    let manualScrollTimeout;
+
     // Para links de navegação
     navLinks.forEach(link => {
       link.addEventListener('click', function (e) {
@@ -237,6 +258,10 @@ document.addEventListener('DOMContentLoaded', function () {
           navbar.classList.remove('active');
         }
 
+        // Pausar o destaque automático temporariamente
+        isManualScroll = true;
+        clearTimeout(manualScrollTimeout);
+
         // Remover todas as classes ativas primeiro
         navLinks.forEach(navLink => {
           navLink.classList.remove('active');
@@ -244,6 +269,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Adicionar classe ativa apenas ao link clicado
         this.classList.add('active');
+        // Sincronizar links ativos
+        syncActiveLinks();
 
         // Obter o alvo de destino
         const targetId = this.getAttribute('href');
@@ -262,6 +289,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
           // Atualizar URL
           history.pushState(null, null, targetId);
+
+          // Reativar o destaque automático após a conclusão da rolagem
+          manualScrollTimeout = setTimeout(() => {
+            isManualScroll = false;
+          }, 1000); // Tempo suficiente para completar a animação
         }
 
         // Atualizar cores do menu mobile após fechar
@@ -269,7 +301,89 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    // Para outros links de âncora
+    // Modificar a função highlightActiveLink para respeitar a flag
+    window.highlightActiveLink = function () {
+      // Se estiver em rolagem manual, não faça nada
+      if (isManualScroll) return;
+
+      // O restante da função continua igual...
+      // Ajustar ponto de referência para melhor detecção
+      const scrollPosition = window.scrollY + (window.innerHeight * 0.15); // 15% da altura da janela
+
+      // Armazenar informações sobre todas as seções
+      const sectionsData = [];
+
+      // Coletar dados de todas as seções
+      sections.forEach(section => {
+        const id = section.getAttribute('id');
+        const top = section.offsetTop - header.offsetHeight - 10; // Pequeno offset adicional
+        const bottom = top + section.offsetHeight;
+        const height = section.offsetHeight;
+        const middle = top + (height / 2);
+
+        sectionsData.push({
+          id: id,
+          top: top,
+          bottom: bottom,
+          middle: middle,
+          height: height
+        });
+      });
+
+      // Ordenar seções verticalmente (do topo para baixo)
+      sectionsData.sort((a, b) => a.top - b.top);
+
+      // Encontrar seção atual usando algoritmo mais preciso
+      let currentSection = '';
+
+      // 1. Primeiro, verificar se estamos dentro de alguma seção
+      let inSection = false;
+      for (const section of sectionsData) {
+        if (scrollPosition >= section.top && scrollPosition < section.bottom) {
+          currentSection = section.id;
+          inSection = true;
+          break;
+        }
+      }
+
+      // 2. Se não estamos dentro de nenhuma seção, encontrar a mais próxima
+      if (!inSection) {
+        let closestSection = null;
+        let minDistance = Infinity;
+
+        for (const section of sectionsData) {
+          // Calcular distância absoluta entre o ponto de scroll e o meio da seção
+          const distance = Math.abs(scrollPosition - section.middle);
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestSection = section;
+          }
+        }
+
+        if (closestSection) {
+          currentSection = closestSection.id;
+        }
+      }
+
+      // 3. Aplicar classe ativa apenas se encontrou uma seção
+      if (currentSection) {
+        // Remover classes ativas de todos os links
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+        });
+
+        // Adicionar classe ativa ao link correspondente
+        const activeLink = document.querySelector(`.nav-link[href="#${currentSection}"]`);
+        if (activeLink) {
+          activeLink.classList.add('active');
+          // Sincronizar links ativos
+          syncActiveLinks();
+        }
+      }
+    }
+
+    // Para outros links de âncora (mantido igual)
     document.querySelectorAll('a[href^="#"]:not(.nav-link)').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
         e.preventDefault();
@@ -296,292 +410,342 @@ document.addEventListener('DOMContentLoaded', function () {
               link.classList.remove('active');
             });
             navLink.classList.add('active');
+            // Sincronizar links ativos
+            syncActiveLinks();
           }
         }
       });
     });
   }
 
-  // 4. Inicializar todas as funções
+  // Ajustar também a inicialização do scroll para usar a função corrigida
   function initNavigation() {
     // Aplicar tratamento de scroll com throttling para melhor performance
-    let isScrolling = false;
+    let scrollTimeout;
 
     window.addEventListener('scroll', function () {
       updateHeaderOnScroll();
-      // highlightActiveLink();
+
+      // Usar throttling para melhorar a performance
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(function () {
+        if (typeof window.highlightActiveLink === 'function') {
+          window.highlightActiveLink();
+        }
+      }, 100);
     });
-    if (!isScrolling) {
-      isScrolling = true;
-      requestAnimationFrame(function () {
-        highlightActiveLink();
-        isScrolling = false;
-      });
-    }
+
     // Preparar rolagem suave
     setupSmoothScrolling();
 
     // Executar uma vez na inicialização
     updateHeaderOnScroll();
-    highlightActiveLink();
+    if (typeof window.highlightActiveLink === 'function') {
+      window.highlightActiveLink();
+    }
     updateToggleMenuColor();
 
     // Tratar redimensionamento da janela
     window.addEventListener('resize', function () {
-      highlightActiveLink();
+      if (typeof window.highlightActiveLink === 'function') {
+        window.highlightActiveLink();
+      }
       updateToggleMenuColor();
     });
   }
 
   // Iniciar toda a navegação
   initNavigation();
-});
 
-// Destacar etapa atual do processo durante o scroll
-function highlightCurrentProcessStep() {
-  const timelineItems = document.querySelectorAll('.timeline-item');
-  if (timelineItems.length === 0) return;
+  // Destacar etapa atual do processo durante o scroll
+  function highlightCurrentProcessStep() {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    if (timelineItems.length === 0) return;
 
-  const scrollPosition = window.scrollY + window.innerHeight / 2;
+    const scrollPosition = window.scrollY + window.innerHeight / 2;
 
-  timelineItems.forEach(item => {
-    const itemTop = item.offsetTop;
-    const itemHeight = item.offsetHeight;
+    timelineItems.forEach(item => {
+      const itemTop = item.offsetTop;
+      const itemHeight = item.offsetHeight;
 
-    if (scrollPosition >= itemTop && scrollPosition < itemTop + itemHeight) {
-      item.classList.add('active');
-    } else {
-      item.classList.remove('active');
-    }
-  });
-}
+      if (scrollPosition >= itemTop && scrollPosition < itemTop + itemHeight) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
+  }
 
-// Adicione ao evento de scroll
-window.addEventListener('scroll', highlightCurrentProcessStep);
+  // Adicione ao evento de scroll
+  window.addEventListener('scroll', highlightCurrentProcessStep);
 
-// Theme Toggle
-function initThemeToggle() {
-  const themeToggles = document.querySelectorAll('.theme-toggle');
-  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+  // Inicializar Accordion (corrigido)
+  function initAccordion() {
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
 
-  // Set initial theme
-  document.body.setAttribute('data-theme', currentTheme);
+    if (accordionHeaders.length === 0) return;
 
-  // Update theme toggle icons
-  updateThemeIcons(currentTheme);
+    accordionHeaders.forEach(header => {
+      // Remover manipuladores anteriores para evitar duplicação
+      const newHeader = header.cloneNode(true);
+      header.parentNode.replaceChild(newHeader, header);
 
-  // Ensure logos are updated on page load
-  updateLogo();
-  updateFooterLogo();
+      newHeader.addEventListener('click', function () {
+        const accordionItem = this.parentElement;
+        const accordionContent = this.nextElementSibling;
+        const icon = this.querySelector('i');
 
-  // Add event listeners to theme toggles
-  themeToggles.forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      document.body.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateThemeIcons(newTheme);
+        // Toggle active class
+        accordionItem.classList.toggle('active');
 
-      // Atualizar também as cores do menu toggle e navbar
-      setTimeout(() => {
-        const header = document.querySelector('.header');
-        const navbar = document.querySelector('.navbar');
+        // Toggle content visibility
+        if (accordionItem.classList.contains('active')) {
+          accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
 
-        if (navbar && navbar.classList.contains('active')) {
-          // Se o menu mobile estiver ativo, atualizar suas cores
-          const navLinks = document.querySelectorAll('.nav-link');
-          navLinks.forEach(link => {
-            link.style.color = '#ffffff';
-          });
-
-          if (document.querySelector('.menu-toggle')) {
-            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
-            spans.forEach(span => {
-              span.style.backgroundColor = '#ffffff';
-            });
+          if (icon) {
+            icon.classList.remove('bx-plus');
+            icon.classList.add('bx-minus');
           }
         } else {
-          // Se não estiver, atualizar o menu toggle baseado no tema e scroll
-          if (document.querySelector('.menu-toggle')) {
-            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
-            const isScrolled = header && header.classList.contains('scrolled');
+          accordionContent.style.maxHeight = '0';
 
-            if (isScrolled) {
-              spans.forEach(span => {
-                span.style.backgroundColor = '#f5f7ff';
-              });
-            } else if (newTheme === 'light') {
-              spans.forEach(span => {
-                span.style.backgroundColor = '#051259';
-              });
-            } else {
-              spans.forEach(span => {
-                span.style.backgroundColor = '#051259';
-              });
+          if (icon) {
+            icon.classList.add('bx-plus');
+            icon.classList.remove('bx-minus');
+          }
+        }
+
+        // Fechar outros items
+        document.querySelectorAll('.accordion-item').forEach(item => {
+          if (item !== accordionItem && item.classList.contains('active')) {
+            item.classList.remove('active');
+
+            const content = item.querySelector('.accordion-content');
+            if (content) {
+              content.style.maxHeight = '0';
+            }
+
+            const itemIcon = item.querySelector('.accordion-header i');
+            if (itemIcon) {
+              itemIcon.classList.add('bx-plus');
+              itemIcon.classList.remove('bx-minus');
             }
           }
-        }
-      }, 10);
+        });
+      });
     });
-  });
-}
-
-function updateThemeIcons(theme) {
-  const themeToggles = document.querySelectorAll('.theme-toggle');
-
-  themeToggles.forEach(toggle => {
-    const icon = toggle.querySelector('i');
-    if (!icon) return;
-
-    if (theme === 'dark') {
-      icon.classList.remove('bx-moon');
-      icon.classList.add('bx-sun');
-    } else {
-      icon.classList.remove('bx-sun');
-      icon.classList.add('bx-moon');
-    }
-  });
-
-  // Atualiza os logos quando o tema muda
-  updateLogo();
-  updateFooterLogo();
-}
-
-// Initialize Theme Toggle
-initThemeToggle();
-
-// Initialize Swipers
-function initSwipers() {
-  if (typeof Swiper === 'undefined') {
-    console.error('Swiper is not defined. Check if the script is loaded correctly.');
-    return;
   }
 
-  // Portfolio Swiper
-  try {
-    new Swiper('.portfolio-slider', {
-      slidesPerView: 1,
-      spaceBetween: 30,
-      loop: true,
-      grabCursor: true,
-      effect: 'slide',
-      speed: 600,
-      autoplay: {
-        delay: 5000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.portfolio-slider .swiper-pagination',
-        clickable: true,
-      },
-      navigation: {
-        nextEl: '.portfolio-slider .swiper-button-next',
-        prevEl: '.portfolio-slider .swiper-button-prev',
-      },
-      breakpoints: {
-        640: {
-          slidesPerView: 1,
-        },
-        768: {
-          slidesPerView: 2,
-          spaceBetween: 30,
-        },
-        1024: {
-          slidesPerView: 3,
-          spaceBetween: 30,
-        },
-      },
-      on: {
-        init: function () {
-          setTimeout(() => this.update(), 100);
-        }
-      }
-    });
-  } catch (error) {
-    console.error('Error initializing portfolio slider:', error);
-  }
+  // Inicialização de links sociais (corrigido)
+  function initSocialLinks() {
+    const socialLinks = document.querySelectorAll('.social-links a');
 
-  // Testimonials Swiper
-  try {
-    new Swiper('.testimonials-slider', {
-      slidesPerView: 1,
-      spaceBetween: 30,
-      loop: true,
-      grabCursor: true,
-      effect: 'fade',
-      fadeEffect: {
-        crossFade: true
-      },
-      speed: 800,
-      autoplay: {
-        delay: 6000,
-        disableOnInteraction: false,
-      },
-      pagination: {
-        el: '.testimonials-slider .swiper-pagination',
-        clickable: true,
-      }
-    });
-  } catch (error) {
-    console.error('Error initializing testimonials slider:', error);
-  }
-}
+    socialLinks.forEach(link => {
+      // Garantir que links externos funcionem corretamente
+      const href = link.getAttribute('href');
 
-// Initialize all swipers after the page is fully loaded
-window.addEventListener('load', function () {
-  setTimeout(initSwipers, 500); // Slight delay to ensure DOM is fully ready
-});
+      if (href && (href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('http://'))) {
+        // Não fazer nada - deixar o comportamento padrão para links externos
+      } else if (href && href.startsWith('#')) {
+        // Para links internos de navegação, garantir que o scroll suave funcione
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          const targetElement = document.querySelector(targetId);
 
-// Accordion
-document.addEventListener('DOMContentLoaded', function () {
-  const accordionHeaders = document.querySelectorAll('.accordion-header');
-  if (accordionHeaders.length === 0) return;
+          if (targetElement) {
+            const headerHeight = document.querySelector('.header').offsetHeight;
+            const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
 
-  accordionHeaders.forEach(header => {
-    header.addEventListener('click', () => {
-      const accordionItem = header.parentElement;
-      if (!accordionItem) return;
+            window.scrollTo({
+              top: targetPosition,
+              behavior: 'smooth'
+            });
 
-      const accordionContent = header.nextElementSibling;
-      if (!accordionContent) return;
-
-      const icon = header.querySelector('i');
-
-      // Toggle active class
-      accordionItem.classList.toggle('active');
-
-      // Toggle icon
-      if (icon) {
-        icon.classList.toggle('bx-plus');
-        icon.classList.toggle('bx-minus');
-      }
-
-      // Toggle content visibility
-      if (accordionItem.classList.contains('active')) {
-        accordionContent.style.maxHeight = accordionContent.scrollHeight + 'px';
-      } else {
-        accordionContent.style.maxHeight = '0';
-      }
-
-      // Close other accordion items
-      document.querySelectorAll('.accordion-item').forEach(item => {
-        if (item !== accordionItem && item.classList.contains('active')) {
-          item.classList.remove('active');
-
-          const itemIcon = item.querySelector('.accordion-header i');
-          if (itemIcon) {
-            itemIcon.classList.add('bx-plus');
-            itemIcon.classList.remove('bx-minus');
+            // Atualizar URL
+            history.pushState(null, null, targetId);
           }
+        });
+      }
+    });
+  }
 
-          const content = item.querySelector('.accordion-content');
-          if (content) {
-            content.style.maxHeight = '0';
+  // Inicializar accordion e links sociais
+  initAccordion();
+  initSocialLinks();
+
+  // Theme Toggle
+  function initThemeToggle() {
+    const themeToggles = document.querySelectorAll('.theme-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
+
+    // Set initial theme
+    document.body.setAttribute('data-theme', currentTheme);
+
+    // Update theme toggle icons
+    updateThemeIcons(currentTheme);
+
+    // Ensure logos are updated on page load
+    updateLogo();
+    updateFooterLogo();
+
+    // Add event listeners to theme toggles
+    themeToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+
+        // Atualizar também as cores do menu toggle e navbar
+        setTimeout(() => {
+          const header = document.querySelector('.header');
+          const navbar = document.querySelector('.navbar');
+
+          if (navbar && navbar.classList.contains('active')) {
+            // Se o menu mobile estiver ativo, atualizar suas cores
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+              link.style.color = '#ffffff';
+            });
+
+            if (document.querySelector('.menu-toggle')) {
+              const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+              spans.forEach(span => {
+                span.style.backgroundColor = '#ffffff';
+              });
+            }
+          } else {
+            // Se não estiver, atualizar o menu toggle baseado no tema e scroll
+            if (document.querySelector('.menu-toggle')) {
+              const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+              const isScrolled = header && header.classList.contains('scrolled');
+
+              if (isScrolled) {
+                spans.forEach(span => {
+                  span.style.backgroundColor = '#f5f7ff';
+                });
+              } else if (newTheme === 'light') {
+                spans.forEach(span => {
+                  span.style.backgroundColor = '#051259';
+                });
+              } else {
+                spans.forEach(span => {
+                  span.style.backgroundColor = '#051259';
+                });
+              }
+            }
+          }
+        }, 10);
+      });
+    });
+  }
+
+  function updateThemeIcons(theme) {
+    const themeToggles = document.querySelectorAll('.theme-toggle');
+
+    themeToggles.forEach(toggle => {
+      const icon = toggle.querySelector('i');
+      if (!icon) return;
+
+      if (theme === 'dark') {
+        icon.classList.remove('bx-moon');
+        icon.classList.add('bx-sun');
+      } else {
+        icon.classList.remove('bx-sun');
+        icon.classList.add('bx-moon');
+      }
+    });
+
+    // Atualiza os logos quando o tema muda
+    updateLogo();
+    updateFooterLogo();
+  }
+
+  // Initialize Theme Toggle
+  initThemeToggle();
+
+  // Initialize Swipers
+  function initSwipers() {
+    if (typeof Swiper === 'undefined') {
+      console.error('Swiper is not defined. Check if the script is loaded correctly.');
+      return;
+    }
+
+    // Portfolio Swiper
+    try {
+      new Swiper('.portfolio-slider', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        grabCursor: true,
+        effect: 'slide',
+        speed: 600,
+        autoplay: {
+          delay: 5000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: '.portfolio-slider .swiper-pagination',
+          clickable: true,
+        },
+        navigation: {
+          nextEl: '.portfolio-slider .swiper-button-next',
+          prevEl: '.portfolio-slider .swiper-button-prev',
+        },
+        breakpoints: {
+          640: {
+            slidesPerView: 1,
+          },
+          768: {
+            slidesPerView: 2,
+            spaceBetween: 30,
+          },
+          1024: {
+            slidesPerView: 3,
+            spaceBetween: 30,
+          },
+        },
+        on: {
+          init: function () {
+            setTimeout(() => this.update(), 100);
           }
         }
       });
-    });
+    } catch (error) {
+      console.error('Error initializing portfolio slider:', error);
+    }
+
+    // Testimonials Swiper
+    try {
+      new Swiper('.testimonials-slider', {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        loop: true,
+        grabCursor: true,
+        effect: 'fade',
+        fadeEffect: {
+          crossFade: true
+        },
+        speed: 800,
+        autoplay: {
+          delay: 6000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: '.testimonials-slider .swiper-pagination',
+          clickable: true,
+        }
+      });
+    } catch (error) {
+      console.error('Error initializing testimonials slider:', error);
+    }
+  }
+
+  // Initialize all swipers after the page is fully loaded
+  window.addEventListener('load', function () {
+    setTimeout(initSwipers, 500); // Slight delay to ensure DOM is fully ready
   });
 });
 

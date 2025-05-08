@@ -560,6 +560,38 @@ body[data-theme="light"] .nav-link::after {
   opacity: 1;
 }
 
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  width: 70%;
+  height: 2px;
+  background-color: var(--accent-color);
+  transform: translateX(-50%);
+  opacity: 1;
+  transition: none;
+}
+
+body[data-theme="light"] .nav-link.active::after {
+  background-color: var(--secondary-color);
+}
+
+.nav-link.active:hover::after {
+  transform: translateX(-50%);
+  width: 70%;
+}
+
+.nav-link:not(.active):hover::after {
+  width: 70%;
+  opacity: 1;
+}
+
+.nav-link::after {
+  opacity: 0;
+  width: 0;
+}
+
 .nav-contact-btn {
   font-family: var(--font-primary);
   text-transform: uppercase;
@@ -2650,7 +2682,7 @@ body[data-theme="dark"] .section-subtitle {
 }
 
 .contact-image img {
-  width: 100%;
+  width: 87%;
   height: auto;
   border-radius: var(--border-radius-lg);
   transition: transform var(--transition-medium);

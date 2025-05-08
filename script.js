@@ -574,13 +574,19 @@ document.addEventListener('DOMContentLoaded', function () {
   initAccordion();
   initSocialLinks();
 
-  // Theme Toggle
+  
+  // Theme Toggle aprimorado com sincronização do sistema
   function initThemeToggle() {
     const themeToggles = document.querySelectorAll('.theme-toggle');
-    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-    const currentTheme = localStorage.getItem('theme') || (prefersDarkScheme.matches ? 'dark' : 'light');
 
-    // Set initial theme
+    // Detecção de preferência do sistema
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Verifica armazenamento local OU preferência do sistema
+    const savedTheme = localStorage.getItem('theme');
+    const currentTheme = savedTheme || (prefersDarkScheme.matches ? 'dark' : 'light');
+
+    // Define tema inicial
     document.body.setAttribute('data-theme', currentTheme);
 
     // Update theme toggle icons
@@ -589,6 +595,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Ensure logos are updated on page load
     updateLogo();
     updateFooterLogo();
+
+    // Adiciona um ouvinte para mudanças na preferência do sistema
+    prefersDarkScheme.addEventListener('change', (e) => {
+      // Só muda automaticamente se o usuário não tiver definido uma preferência manual
+      if (!localStorage.getItem('theme')) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        document.body.setAttribute('data-theme', newTheme);
+        updateThemeIcons(newTheme);
+        updateLogo();
+        updateFooterLogo();
+
+        // Atualiza cores de interface
+        updateInterfaceColors(newTheme);
+      }
+    });
 
     // Add event listeners to theme toggles
     themeToggles.forEach(toggle => {
@@ -599,47 +620,52 @@ document.addEventListener('DOMContentLoaded', function () {
         updateThemeIcons(newTheme);
 
         // Atualizar também as cores do menu toggle e navbar
-        setTimeout(() => {
-          const header = document.querySelector('.header');
-          const navbar = document.querySelector('.navbar');
-
-          if (navbar && navbar.classList.contains('active')) {
-            // Se o menu mobile estiver ativo, atualizar suas cores
-            const navLinks = document.querySelectorAll('.nav-link');
-            navLinks.forEach(link => {
-              link.style.color = '#ffffff';
-            });
-
-            if (document.querySelector('.menu-toggle')) {
-              const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
-              spans.forEach(span => {
-                span.style.backgroundColor = '#ffffff';
-              });
-            }
-          } else {
-            // Se não estiver, atualizar o menu toggle baseado no tema e scroll
-            if (document.querySelector('.menu-toggle')) {
-              const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
-              const isScrolled = header && header.classList.contains('scrolled');
-
-              if (isScrolled) {
-                spans.forEach(span => {
-                  span.style.backgroundColor = '#f5f7ff';
-                });
-              } else if (newTheme === 'light') {
-                spans.forEach(span => {
-                  span.style.backgroundColor = '#051259';
-                });
-              } else {
-                spans.forEach(span => {
-                  span.style.backgroundColor = '#051259';
-                });
-              }
-            }
-          }
-        }, 10);
+        updateInterfaceColors(newTheme);
       });
     });
+
+    // Função auxiliar para atualizar cores da interface
+    function updateInterfaceColors(theme) {
+      setTimeout(() => {
+        const header = document.querySelector('.header');
+        const navbar = document.querySelector('.navbar');
+
+        if (navbar && navbar.classList.contains('active')) {
+          // Se o menu mobile estiver ativo, atualizar suas cores
+          const navLinks = document.querySelectorAll('.nav-link');
+          navLinks.forEach(link => {
+            link.style.color = '#ffffff';
+          });
+
+          if (document.querySelector('.menu-toggle')) {
+            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+            spans.forEach(span => {
+              span.style.backgroundColor = '#ffffff';
+            });
+          }
+        } else {
+          // Se não estiver, atualizar o menu toggle baseado no tema e scroll
+          if (document.querySelector('.menu-toggle')) {
+            const spans = document.querySelector('.menu-toggle').querySelectorAll('span');
+            const isScrolled = header && header.classList.contains('scrolled');
+
+            if (isScrolled) {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#f5f7ff';
+              });
+            } else if (theme === 'light') {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#051259';
+              });
+            } else {
+              spans.forEach(span => {
+                span.style.backgroundColor = '#051259';
+              });
+            }
+          }
+        }
+      }, 10);
+    }
   }
 
   function updateThemeIcons(theme) {

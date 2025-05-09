@@ -3579,19 +3579,37 @@ body[data-theme="light"] .whatsapp-float {
   animation: glow 3s infinite;
 }
 
-/* ==================== MEDIA QUERIES ==================== */
-/* Esconder bullets em desktop, mostrar em mobile */
-@media (min-width: 769px) {
-  .portfolio-slider .swiper-pagination {
-    display: none;
+/* ==================== MEDIA QUERIES REFATORADAS ==================== */
+
+/* Tablets grandes e laptops pequenos */
+@media (max-width: 1200px) {
+  .services-grid {
+    gap: 25px;
+  }
+
+  .container {
+    width: 90%;
+    max-width: 1100px;
+  }
+
+  .about-content {
+    gap: 3rem;
   }
 }
 
+/* Tablets */
 @media (max-width: 1024px) {
   html {
-    font-size: 60%;
+    font-size: 58%;
   }
 
+  /* Ajustes de contêiner */
+  .container {
+    width: 90%;
+    padding: 0;
+  }
+
+  /* Seção Hero */
   .hero .container {
     flex-direction: column;
   }
@@ -3601,47 +3619,66 @@ body[data-theme="light"] .whatsapp-float {
     max-width: 100%;
   }
 
+  .stat-highlight {
+    max-width: 90%;
+    padding: 1.5rem;
+  }
+
+  /* Seção About */
   .about-content {
     flex-direction: column;
   }
 
-
   .about-text {
-    max-width: 95%;
-    margin: 0 auto 1rem;
+    max-width: 100%;
+    margin: 0;
   }
 
   .about-image {
-    max-width: 70%;
-    margin: 0 auto;
+    max-width: 300px;
+    margin: 0 auto 3rem;
   }
 
   .about-image img {
-    width: 200px;
+    width: 100%;
+    max-width: 200px;
     height: auto;
     margin: 0 auto;
     display: block;
   }
 
+  /* Ajustes timeline */
   .timeline-content {
     width: calc(50% - 30px);
   }
 
-  .contact-container {
-    flex-direction: column;
+  /* Ajustes contato */
+  .contact-wrapper {
+    gap: 3rem;
   }
 
-  .contact-info,
-  .contact-form {
-    max-width: 100%;
-  }
-
+  /* Grid de features */
   .trust-features {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 }
 
+/* Tablets pequenos e celulares grandes */
 @media (max-width: 992px) {
+  html {
+    font-size: 57%;
+  }
+
+  .section-title {
+    font-size: 3.2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.6rem;
+  }
+
+  /* Ajustes de serviços */
   .services-grid {
     flex-direction: column;
     align-items: center;
@@ -3650,13 +3687,16 @@ body[data-theme="light"] .whatsapp-float {
   .service-card {
     width: 100%;
     max-width: 500px;
-    /* Aumentar a largura máxima em tablets */
+    margin-bottom: 25px;
   }
 
+  /* Ajustes de cards de tipos de site */
   .site-types-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 
+  /* Ajustes de contato */
   .contact-wrapper {
     flex-direction: column;
   }
@@ -3666,60 +3706,25 @@ body[data-theme="light"] .whatsapp-float {
     max-width: 100%;
   }
 
+  /* Ajustes de opções de serviço */
   .service-option {
     min-width: 45%;
   }
-}
 
-/* Media query para dispositivos móveis */
-@media (max-width: 576px) {
-  .services-grid {
-    gap: 20px;
-  }
-
-  .service-card {
-    min-width: unset;
-    width: 90%;
-    margin-bottom: 30px;
-  }
-
-  .service-header {
-    padding: 25px 15px;
-    min-height: 100px;
-  }
-
-  .service-title {
-    font-size: 2.2rem;
-  }
-
-  .service-icon {
-    font-size: 4rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .service-content {
-    padding: 2rem;
-  }
-
-  .service-benefits li {
-    margin-bottom: 1.5rem;
-  }
-
-  .site-types-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-
-  .site-type-card {
-    padding: 2.5rem 1.5rem;
+  /* Conteúdo do form de contato */
+  .services-checkboxes {
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 }
 
+/* Celulares médios */
 @media (max-width: 768px) {
   html {
-    font-size: 58%;
+    font-size: 55%;
   }
 
+  /* Header e navegação mobile */
   .header {
     height: 70px;
   }
@@ -3729,26 +3734,41 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .container {
-    width: 94%;
+    width: 90%;
   }
 
+  /* Tamanhos de fonte reduzidos */
   .hero-title {
-    font-size: 3.6rem;
-  }
-
-  .mini-services {
-    gap: 1rem;
+    font-size: 3.2rem;
   }
 
   .hero-subtitle {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+
+  .section-title {
+    font-size: 3rem;
+  }
+
+  /* Elementos hero */
+  .mini-services {
+    gap: 1rem;
   }
 
   .hero-cta {
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
+  .hero-cta .btn {
+    width: 100%;
+  }
+
+  /* Menu mobile */
   .navbar {
     position: fixed;
     top: 0;
@@ -3758,7 +3778,7 @@ body[data-theme="light"] .whatsapp-float {
     background: var(--primary-color);
     flex-direction: column;
     align-items: flex-start;
-    padding: 80px 30px 30px;
+    padding: 80px 20px 30px;
     transition: right var(--transition-medium);
     z-index: 90;
     box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
@@ -3796,7 +3816,7 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .nav-item {
-    margin: 1rem 0;
+    margin: 0.8rem 0;
     width: 100%;
     height: auto;
   }
@@ -3835,6 +3855,7 @@ body[data-theme="light"] .whatsapp-float {
     display: flex;
   }
 
+  /* Timeline ajustes */
   .timeline::before {
     left: 30px;
   }
@@ -3842,6 +3863,7 @@ body[data-theme="light"] .whatsapp-float {
   .timeline-item {
     flex-direction: column;
     margin-left: 1px;
+    margin-bottom: 3rem;
   }
 
   .timeline-number {
@@ -3860,10 +3882,13 @@ body[data-theme="light"] .whatsapp-float {
     transform: translateX(-50%) scale(1.1);
   }
 
+  /* Grid responsivo */
   .trust-features {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
+  /* Testimonial layout */
   .testimonial {
     flex-direction: column;
   }
@@ -3874,26 +3899,29 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .testimonial-image {
-    height: 250px;
+    height: 200px;
   }
 
   .testimonial-content {
-    padding: 3rem 2rem;
+    padding: 2.5rem 2rem;
   }
 
   .quote-icon {
     top: 1rem;
     left: 1rem;
-    font-size: 3rem;
+    font-size: 2.8rem;
   }
 
+  /* FAQs responsivas */
   .faq-services {
     flex-direction: column;
+    gap: 1.5rem;
   }
 
   .faq-bonus {
     flex-direction: column;
     text-align: center;
+    padding: 1.5rem;
   }
 
   .faq-bonus i {
@@ -3909,11 +3937,12 @@ body[data-theme="light"] .whatsapp-float {
     text-align: left;
   }
 
+  /* Form de contato */
   .contact-form {
-    padding: 3rem 2rem;
+    padding: 2.5rem 2rem;
   }
 
-  form-row {
+  .form-row {
     flex-direction: column;
     gap: 12px;
   }
@@ -3925,12 +3954,10 @@ body[data-theme="light"] .whatsapp-float {
   .service-option {
     width: 100%;
     min-width: 100%;
+    margin-bottom: 0.8rem;
   }
 
-  .section-title {
-    font-size: 2.8rem;
-  }
-
+  /* Footer */
   .footer-columns {
     gap: 3rem;
   }
@@ -3940,7 +3967,7 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .footer-top {
-    padding: 5rem 4% 3rem;
+    padding: 4rem 4% 3rem;
   }
 
   .footer-bottom {
@@ -3952,8 +3979,10 @@ body[data-theme="light"] .whatsapp-float {
     gap: 2rem;
   }
 
+  /* Popup e float button */
   .popup-content {
     padding: 3rem 2rem;
+    width: 85%;
   }
 
   .whatsapp-float {
@@ -3964,6 +3993,7 @@ body[data-theme="light"] .whatsapp-float {
     right: 20px;
   }
 
+  /* Portfolio */
   .portfolio-slider .swiper-button-next,
   .portfolio-slider .swiper-button-prev {
     display: none;
@@ -3976,7 +4006,7 @@ body[data-theme="light"] .whatsapp-float {
 
   .site-types-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.8rem;
   }
 
   .site-type-card {
@@ -3991,46 +4021,140 @@ body[data-theme="light"] .whatsapp-float {
 
   .contact-image img {
     width: 100%;
-  }
-}
-
-@media (max-width: 576px) {
-  .hero-title {
-    font-size: 3.2rem;
+    max-width: 300px;
+    margin: 0 auto;
   }
 
-  .hero-subtitle {
-    font-size: 1.8rem;
-  }
-
-  .section-title {
-    font-size: 3rem;
-  }
-
-  .mini-services {
-    gap: 1rem;
-  }
-
-  .mini-service {
-    width: 110px;
-    height: 110px;
-  }
-
-  .trust-badges {
-    justify-content: center;
-  }
-
-  .about {
-    padding: 6rem 0;
-  }
-
+  /* Espaçamento entre seções */
+  .about,
   .services,
   .process,
   .portfolio,
   .testimonials,
   .faq,
   .contact {
-    padding: 6rem 0;
+    padding: 7rem 0;
+  }
+}
+
+/* Celulares pequenos */
+@media (max-width: 576px) {
+  html {
+    font-size: 52%;
+  }
+
+  .container {
+    width: 92%;
+  }
+
+  /* Hero e títulos */
+  .hero-title {
+    font-size: 3rem;
+    line-height: 1.3;
+  }
+
+  .hero-subtitle {
+    font-size: 1.7rem;
+    line-height: 1.4;
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-size: 2.8rem;
+    line-height: 1.3;
+  }
+
+  .stat-highlight {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .stat-highlight p {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Cards e serviços */
+  .services-grid {
+    gap: 20px;
+  }
+
+  .service-card {
+    min-width: unset;
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  .service-header {
+    padding: 20px 15px;
+    min-height: 80px;
+  }
+
+  .service-title {
+    font-size: 2.2rem;
+  }
+
+  .service-icon {
+    font-size: 3.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .service-content {
+    padding: 1.8rem;
+  }
+
+  .service-benefits li {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Mini serviços */
+  .mini-services {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mini-service {
+    width: 110px;
+    height: 110px;
+    padding: 1.2rem;
+  }
+
+  .mini-service i {
+    font-size: 2.8rem;
+  }
+
+  .mini-service span {
+    font-size: 1.2rem;
+  }
+
+  /* Trust badges */
+  .trust-badges {
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .trust-badge {
+    padding: 0.8rem 1.2rem;
+  }
+
+  .trust-badge i {
+    font-size: 1.8rem;
+  }
+
+  .trust-badge span {
+    font-size: 1.3rem;
+  }
+
+  /* Espaçamento entre seções */
+  .about,
+  .services,
+  .process,
+  .portfolio,
+  .testimonials,
+  .faq,
+  .contact {
+    padding: 5rem 0;
   }
 
   .service-card {
@@ -4038,17 +4162,27 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .portfolio-item {
-    height: 300px;
+    height: 280px;
   }
 
   .portfolio-overlay {
-    padding: 2rem;
+    padding: 1.8rem;
   }
 
   .portfolio-overlay h4 {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
 
+  /* Detalhes dos benefícios */
+  .benefit-header {
+    font-size: 1.5rem;
+  }
+
+  .benefit-desc {
+    font-size: 1.3rem;
+  }
+
+  /* Footer */
   .footer-top {
     padding: 4rem 0 3rem;
   }
@@ -4058,11 +4192,133 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .contact-form {
-    padding: 3rem 2rem;
+    padding: 2.5rem 1.8rem;
   }
 
   .form-row {
     flex-direction: column;
+  }
+
+  /* Accordion panels */
+  .accordion-header {
+    padding: 1.5rem;
+  }
+
+  .accordion-header h3 {
+    font-size: 1.6rem;
+  }
+
+  .accordion-content {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Celulares muito pequenos */
+@media (max-width: 400px) {
+  html {
+    font-size: 50%;
+  }
+
+  .container {
+    width: 94%;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.6rem;
+  }
+
+  .section-title {
+    font-size: 2.6rem;
+  }
+
+  .service-card {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .service-header {
+    padding: 18px 12px;
+    min-height: 80px;
+  }
+
+  .service-content {
+    padding: 1.5rem;
+  }
+
+  .service-title {
+    font-size: 2rem;
+  }
+
+  .service-icon {
+    font-size: 3.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .benefit-header {
+    font-size: 1.4rem;
+  }
+
+  .benefit-desc {
+    font-size: 1.2rem;
+  }
+
+  /* Trust badges em uma coluna */
+  .trust-badges {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: center;
+  }
+
+  .trust-badge {
+    width: 100%;
+    max-width: 200px;
+    justify-content: center;
+  }
+
+  /* Mini-serviços menores */
+  .mini-service {
+    width: 90px;
+    height: 90px;
+  }
+
+  /* Timeline e features */
+  .timeline-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .trust-feature {
+    padding: 2rem 1.5rem;
+  }
+
+  /* Portfolio */
+  .portfolio-item {
+    height: 250px;
+  }
+
+  /* Testimonials */
+  .testimonial-content {
+    padding: 2rem 1.5rem;
+  }
+
+  /* Formulário de contato */
+  .contact-form {
+    padding: 2rem 1.5rem;
+  }
+
+  .form-row input {
+    padding: 12px 14px;
+  }
+
+  .service-option {
+    padding: 10px 15px;
+  }
+
+  .submit-btn {
+    padding: 14px;
   }
 }
 
@@ -4105,7 +4361,7 @@ body[data-theme="light"] .whatsapp-float {
 
 /* Melhorando scrollbar para uma experiência mais refinada */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -4114,7 +4370,7 @@ body[data-theme="light"] .whatsapp-float {
 
 ::-webkit-scrollbar-thumb {
   background: var(--secondary-color);
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -4153,7 +4409,6 @@ body[data-theme="light"] .theme-toggle {
 }
 
 /* Tema claro */
-
 body[data-theme="light"] .header {
   background-color: var(--bg-light);
   box-shadow: 0 4px 15px rgba(5, 18, 89, 0.08);
@@ -4166,7 +4421,6 @@ body[data-theme="light"] .header.scrolled {
 /* Cores dos textos do nav */
 body[data-theme="dark"] .header .nav-link {
   color: var(--primary-color);
-  /* Cor de texto azul escuro no tema escuro */
 }
 
 /* Cor dos links no tema claro */
@@ -4180,7 +4434,6 @@ body[data-theme="light"] .header:not(.scrolled) .nav-link::after {
 
 body[data-theme="light"] .header .nav-link {
   color: var(--primary-color);
-  /* Cor de texto azul escuro no tema claro */
 }
 
 body[data-theme="dark"] .header.scrolled .nav-link,
@@ -4197,31 +4450,4 @@ body[data-theme="dark"] .nav-link {
 .header.scrolled .theme-toggle {
   color: var(--text-light) !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
-}
-
-@media (max-width: 350px) {
-  .service-card {
-    width: 100%;
-    min-width: 100%;
-  }
-
-  .service-header {
-    padding: 20px 10px;
-  }
-
-  .service-content {
-    padding: 1.5rem;
-  }
-
-  .service-title {
-    font-size: 2rem;
-  }
-
-  .benefit-header {
-    font-size: 1.5rem;
-  }
-
-  .benefit-desc {
-    font-size: 1.3rem;
-  }
 }

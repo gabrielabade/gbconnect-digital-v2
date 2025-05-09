@@ -3619,9 +3619,10 @@ body[data-theme="light"] .whatsapp-float {
     max-width: 100%;
   }
 
-  .stat-highlight {
+  .hero-stats {
     max-width: 90%;
     padding: 1.5rem;
+    margin: 0 auto 3rem;
   }
 
   /* Seção About */
@@ -3726,7 +3727,11 @@ body[data-theme="light"] .whatsapp-float {
 
   /* Header e navegação mobile */
   .header {
-    height: 70px;
+    height: 65px;
+  }
+
+  .logo img {
+    height: 32px;
   }
 
   .header.scrolled {
@@ -3737,35 +3742,110 @@ body[data-theme="light"] .whatsapp-float {
     width: 90%;
   }
 
-  /* Tamanhos de fonte reduzidos */
+  /* Ajustes Hero Section */
+  .hero {
+    padding: 8rem 0 4rem;
+  }
+
+  .hero-content {
+    padding: 2rem 0;
+  }
+
   .hero-title {
-    font-size: 3.2rem;
+    font-size: 3.4rem;
+    margin-bottom: 1.2rem;
+    line-height: 1.25;
   }
 
   .hero-subtitle {
     font-size: 1.8rem;
+    margin-bottom: 2rem;
+    max-width: 92%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .section-title {
-    font-size: 3rem;
+  /* Ajuste crucial para alinhar hero-stats com o subtitle */
+  .hero-stats {
+    max-width: 92%;
+    margin: 0 auto 2.5rem;
   }
 
-  /* Elementos hero */
+  .stat-highlight {
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    line-height: 1.5;
+  }
+
+  .stat-highlight p {
+    margin-bottom: 0.8rem;
+  }
+
+  /* Mini services otimizados */
   .mini-services {
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    justify-content: center;
+    max-width: 92%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
+  .mini-service {
+    width: 105px;
+    height: 105px;
+    padding: 1.2rem;
+  }
+
+  .mini-service i {
+    font-size: 3rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .mini-service span {
+    font-size: 1.3rem;
+    line-height: 1.2;
+  }
+
+  /* CTA buttons */
   .hero-cta {
+    display: flex;
     flex-direction: column;
     gap: 1.5rem;
     width: 100%;
     max-width: 280px;
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 2.5rem;
   }
 
   .hero-cta .btn {
     width: 100%;
+    padding: 1.2rem 1rem;
+  }
+
+  /* Trust badges responsivos */
+  .trust-badges {
+    gap: 1.2rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 92%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .trust-badge {
+    padding: 0.8rem 1.5rem;
+  }
+
+  /* Social links */
+  .social-links {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 
   /* Menu mobile */
@@ -3785,6 +3865,8 @@ body[data-theme="light"] .whatsapp-float {
   }
 
   .navbar.active {
+    width: 260px;
+    padding: 70px 15px 30px;
     background-color: var(--primary-color) !important;
     box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3) !important;
     right: 0;
@@ -3809,6 +3891,16 @@ body[data-theme="light"] .whatsapp-float {
     background-color: var(--text-light) !important;
   }
 
+  .menu-toggle {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .menu-toggle span {
+    width: 22px;
+    margin: 2px 0;
+  }
+
   .nav-list {
     flex-direction: column;
     align-items: flex-start;
@@ -3824,7 +3916,7 @@ body[data-theme="light"] .whatsapp-float {
   .nav-link {
     position: relative;
     display: block;
-    padding: 1rem 0;
+    padding: 0.9rem 0;
     width: 100%;
     font-size: 1.6rem;
     height: auto;
@@ -4056,21 +4148,51 @@ body[data-theme="light"] .whatsapp-float {
   .hero-subtitle {
     font-size: 1.7rem;
     line-height: 1.4;
-    margin-bottom: 2rem;
+    margin-bottom: 1.8rem;
+    max-width: 95%;
   }
 
-  .section-title {
-    font-size: 2.8rem;
-    line-height: 1.3;
+  /* Ajuste para igualar ao subtitle */
+  .hero-stats {
+    max-width: 95%;
   }
 
   .stat-highlight {
-    padding: 1.5rem;
-    font-size: 1.5rem;
+    padding: 1.5rem 1.8rem;
+    font-size: 1.45rem;
+    line-height: 1.5;
   }
 
   .stat-highlight p {
+    font-size: 1.4rem;
+    line-height: 1.5;
     margin-bottom: 0.5rem;
+  }
+
+  .stat-highlight strong {
+    font-size: 1.5rem;
+  }
+
+  /* Mini services reorganizados */
+  .mini-services {
+    gap: 1.2rem;
+    max-width: 95%;
+    margin-bottom: 2.2rem;
+  }
+
+  .mini-service {
+    width: 95px;
+    height: 95px;
+    padding: 1rem;
+  }
+
+  .mini-service i {
+    font-size: 2.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .mini-service span {
+    font-size: 1.2rem;
   }
 
   /* Cards e serviços */
@@ -4106,32 +4228,12 @@ body[data-theme="light"] .whatsapp-float {
     margin-bottom: 1.5rem;
   }
 
-  /* Mini serviços */
-  .mini-services {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .mini-service {
-    width: 110px;
-    height: 110px;
-    padding: 1.2rem;
-  }
-
-  .mini-service i {
-    font-size: 2.8rem;
-  }
-
-  .mini-service span {
-    font-size: 1.2rem;
-  }
-
   /* Trust badges */
   .trust-badges {
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-bottom: 2.2rem;
   }
 
   .trust-badge {
@@ -4144,6 +4246,15 @@ body[data-theme="light"] .whatsapp-float {
 
   .trust-badge span {
     font-size: 1.3rem;
+  }
+
+  .social-links {
+    margin-top: 1.2rem;
+  }
+
+  .social-links a {
+    width: 4rem;
+    height: 4rem;
   }
 
   /* Espaçamento entre seções */
@@ -4211,6 +4322,11 @@ body[data-theme="light"] .whatsapp-float {
   .accordion-content {
     padding: 0 1.5rem;
   }
+
+  .section-light,
+  .section-gradient {
+    padding: 5rem 0;
+  }
 }
 
 /* Celulares muito pequenos */
@@ -4266,6 +4382,27 @@ body[data-theme="light"] .whatsapp-float {
     font-size: 1.2rem;
   }
 
+  /* Mini services compactos */
+  .mini-services {
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .mini-service {
+    width: 85px;
+    height: 85px;
+    padding: 0.8rem;
+  }
+
+  .mini-service i {
+    font-size: 2.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .mini-service span {
+    font-size: 1.1rem;
+  }
+
   /* Trust badges em uma coluna */
   .trust-badges {
     flex-direction: column;
@@ -4279,10 +4416,20 @@ body[data-theme="light"] .whatsapp-float {
     justify-content: center;
   }
 
-  /* Mini-serviços menores */
-  .mini-service {
-    width: 90px;
-    height: 90px;
+  /* CTA mais compactos */
+  .hero-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 100%;
+    max-width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-cta .btn {
+    width: 100%;
+    padding: 1.1rem 1.8rem;
   }
 
   /* Timeline e features */
@@ -4322,7 +4469,7 @@ body[data-theme="light"] .whatsapp-float {
   }
 }
 
-/* Efeitos e animações sutis */
+/* Estilos complementares e animações */
 @keyframes float {
   0% {
     transform: translateY(0);

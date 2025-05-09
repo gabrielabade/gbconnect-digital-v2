@@ -574,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function () {
   initAccordion();
   initSocialLinks();
 
-  
+
   // Theme Toggle aprimorado com sincronização do sistema
   function initThemeToggle() {
     const themeToggles = document.querySelectorAll('.theme-toggle');
@@ -857,6 +857,7 @@ function initExitPopup() {
 
   const closePopupBtn = document.querySelector('.popup-close');
   const dismissBtn = document.querySelector('.popup-dismiss');
+  const aproveitarBtn = exitPopup.querySelector('a.btn.btn-primary'); // Selecionar o botão "Quero Aproveitar!"
 
   // Close popup function
   function closePopup() {
@@ -895,6 +896,11 @@ function initExitPopup() {
 
   if (dismissBtn) {
     dismissBtn.addEventListener('click', closePopup);
+  }
+
+  // Adicionar evento ao botão "Quero Aproveitar!"
+  if (aproveitarBtn) {
+    aproveitarBtn.addEventListener('click', closePopup);
   }
 
   // Close when clicking outside
@@ -973,6 +979,41 @@ function initScrollReveal() {
 
 // Initialize ScrollReveal after the page is loaded
 window.addEventListener('load', initScrollReveal);
+
+
+// Initialize ScrollReveal after the page is loaded
+window.addEventListener('load', initScrollReveal);
+
+// Função para alinhamento uniforme na seção hero
+function alignHeroElements() {
+  if (window.innerWidth <= 768) {
+    const subtitle = document.querySelector('.hero-subtitle');
+    const stats = document.querySelector('.hero-stats');
+    const miniServices = document.querySelector('.mini-services');
+
+    if (subtitle && stats && miniServices) {
+      const subtitleWidth = subtitle.offsetWidth;
+      const subtitleMaxWidth = getComputedStyle(subtitle).maxWidth;
+
+      stats.style.maxWidth = subtitleMaxWidth;
+      miniServices.style.maxWidth = subtitleMaxWidth;
+
+      // Ajustar mini-services para telas muito pequenas
+      if (window.innerWidth <= 400) {
+        const miniServiceItems = document.querySelectorAll('.mini-service');
+        miniServiceItems.forEach(service => {
+          service.style.width = '85px';
+          service.style.height = '85px';
+        });
+      }
+    }
+  }
+}
+
+// Executar quando a página carregar e quando redimensionar
+window.addEventListener('load', alignHeroElements);
+window.addEventListener('resize', alignHeroElements);
+
 
 // Particles Animation - VERSÃO OTIMIZADA E PROFISSIONAL
 function initParticles() {

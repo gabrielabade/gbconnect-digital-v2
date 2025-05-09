@@ -3875,7 +3875,6 @@ body[data-theme="light"] .whatsapp-float {
     top: 60px;
     left: 0;
     width: 100%;
-    background: var(--primary-color);
     padding: 1rem 0;
   }
 

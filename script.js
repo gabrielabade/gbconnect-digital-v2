@@ -1277,3 +1277,64 @@ window.addEventListener('load', function () {
   updateLogo();
   updateFooterLogo();
 });
+
+// Solução para o problema de sobreposição dos social links
+document.addEventListener('DOMContentLoaded', function () {
+  // 1. Limitar a altura da seção hero e seus elementos internos
+  const heroSection = document.getElementById('home');
+  if (heroSection) {
+    // Garantir que a altura seja explícita para conter os elementos
+    heroSection.style.overflow = "hidden";
+  }
+
+  // 2. Corrigir a área dos links sociais
+  const socialLinks = document.querySelector('.social-links');
+  if (socialLinks) {
+    // Redefinir tamanho e posição
+    socialLinks.style.position = "relative";
+    socialLinks.style.zIndex = "5";
+    socialLinks.style.height = "auto";
+    socialLinks.style.marginBottom = "0";
+    socialLinks.style.paddingBottom = "0";
+    socialLinks.style.bottom = "0";
+
+    // 3. Corrigir cada link individualmente
+    const links = socialLinks.querySelectorAll('a');
+    links.forEach(link => {
+      // Garantir que cada link tenha tamanho explícito e posição correta
+      link.style.position = "relative";
+      link.style.display = "inline-flex";
+      link.style.alignItems = "center";
+      link.style.justifyContent = "center";
+      link.style.width = "4.5rem";
+      link.style.height = "4.5rem";
+      link.style.margin = "0 10px";
+      link.style.zIndex = "10";
+      link.style.pointerEvents = "auto";
+
+      // Adicionar evento de clique direto
+      link.onclick = function (e) {
+        e.stopPropagation(); // Impedir propagação do evento
+        window.open(this.href, '_blank');
+        return false;
+      };
+    });
+  }
+
+  // 4. Garantir que a wave não esteja causando problemas
+  const heroWave = document.querySelector('.hero-wave');
+  if (heroWave) {
+    heroWave.style.pointerEvents = "none"; // Desabilitar eventos na wave
+  }
+
+  // 5. Corrigir a próxima seção para ter uma separação clara
+  const aboutSection = document.getElementById('about');
+  if (aboutSection) {
+    aboutSection.style.position = "relative";
+    aboutSection.style.zIndex = "3";
+    aboutSection.style.marginTop = "0";
+    aboutSection.style.paddingTop = "5rem";
+  }
+
+  console.log("Fixed potential overlap issues with social links");
+});

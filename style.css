@@ -4127,6 +4127,25 @@ body[data-theme="light"] .whatsapp-float {
   .contact {
     padding: 7rem 0;
   }
+
+  .service-card:hover,
+  .portfolio-item:hover,
+  .hero-image img {
+    transform: none !important;
+    animation: none !important;
+    transition: opacity 0.3s ease !important;
+  }
+
+  .btn,
+  .nav-link,
+  .social-links a {
+    transition: color 0.3s ease, background-color 0.3s ease !important;
+  }
+
+  #particles-canvas {
+    opacity: 0.3;
+  }
+
 }
 
 /* Celulares pequenos */

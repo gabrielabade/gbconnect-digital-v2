@@ -636,6 +636,11 @@ body[data-theme="light"] .nav-link.active::after {
   align-items: center;
 }
 
+.simple-toggle {
+  width: 30px;
+  height: 30px;
+}
+
 .menu-toggle {
   width: 4rem;
   height: 4rem;
@@ -3862,6 +3867,20 @@ body[data-theme="light"] .whatsapp-float {
     transition: right var(--transition-medium);
     z-index: 90;
     box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .navbar-mobile {
+    display: none;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: var(--primary-color);
+    padding: 1rem 0;
+  }
+
+  .navbar-mobile.active {
+    display: block;
   }
 
   .navbar.active {

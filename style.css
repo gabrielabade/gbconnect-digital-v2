@@ -3988,6 +3988,10 @@ body[data-theme="light"] .whatsapp-float {
     order: -1;
     /* Mover o card popular para cima em mobile */
   }
+
+  .contact-image img {
+    width: 100%;
+  }
 }
 
 @media (max-width: 576px) {

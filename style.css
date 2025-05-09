@@ -4373,6 +4373,26 @@ body[data-theme="light"] .whatsapp-float {
 }
 
 /* Celulares muito pequenos */
+@media (max-width: 480px) {
+  .timeline-number {
+    width: 38px;
+    height: 38px;
+    font-size: 1.6rem;
+    left: 25px;
+    box-shadow: 0 0 0 3px var(--bg-color), 0 0 0 5px rgba(255, 255, 255, 0.1);
+  }
+
+  .timeline::before {
+    left: 25px;
+    /* Ajuste a linha do timeline para alinhar com os números menores */
+  }
+
+  .timeline-content {
+    margin-left: 40px !important;
+    width: calc(100% - 50px);
+  }
+}
+
 @media (max-width: 400px) {
   html {
     font-size: 50%;
